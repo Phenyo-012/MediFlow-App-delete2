@@ -162,7 +162,7 @@ function createTotpRecoveryService({
           lastAttemptAt: serverTimestamp(),
         });
       } catch {
-
+        // Preserve the recovery failure if updating its audit status also fails.
       }
       throw new TotpRecoveryError(503, "RECOVERY_REQUIRES_REVIEW",
           "Recovery could not be confirmed. Check the account before retrying.");
