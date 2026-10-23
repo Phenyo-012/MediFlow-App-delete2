@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Keep device-bound offline-session enrollment out of Android cloud backups. -->
+<full-backup-content>
+    <exclude domain="sharedpref" path="mediflow_offline_session.xml"/>
+</full-backup-content>

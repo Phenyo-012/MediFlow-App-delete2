@@ -1,0 +1,145 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!-- Layout for user management. The Activity, Fragment or adapter uses these IDs to bind state and user actions. -->
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <!-- Header -->
+    <!-- userManagementHeader is referenced by the screen code when it renders or handles user input. -->
+    <LinearLayout
+        android:id="@+id/userManagementHeader"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/dmi_accent"
+        android:fitsSystemWindows="true"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="8dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageButton
+            android:id="@+id/userManagementBackButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:padding="12dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Back"
+            android:src="@drawable/ic_back_button"
+            app:tint="@android:color/white"
+            android:scaleType="fitCenter"/>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1"
+            android:paddingTop="10dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="User Management"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/userCountText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="0 users"
+                android:textColor="@color/dmi_accent_light"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/userRefreshButton"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="12dp"
+            android:text="Refresh"
+            android:textColor="@color/dmi_toolbar_button_text"
+            app:backgroundTint="@color/dmi_primary"
+            app:strokeColor="@color/dmi_toolbar_button_stroke" />
+
+    </LinearLayout>
+    <!-- Create User action -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/userCreateButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="Create User"
+        android:textColor="@color/dmi_primary_button_text"
+        android:visibility="gone"
+        app:backgroundTint="@color/dmi_primary_button_background"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/userManagementHeader" />
+    <!-- Loading indicator -->
+    <!-- userManagementProgress communicates that the screen is waiting for data or a submitted action. -->
+    <ProgressBar
+        android:id="@+id/userManagementProgress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminateTint="@color/dmi_accent"
+        android:progressTint="@color/dmi_accent"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/userCreateButton" />
+    <!-- Error state -->
+    <!-- userManagementErrorText gives the user feedback when there is no content or an operation cannot complete. -->
+    <TextView
+        android:id="@+id/userManagementErrorText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="24dp"
+        android:textColor="#B3261E"
+        android:textSize="14sp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/userCreateButton" />
+    <!-- User list -->
+    <!-- userManagementRecyclerView displays the current rows; its adapter supplies the values and click behavior. -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/userManagementRecyclerView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:clipToPadding="false"
+        android:paddingTop="8dp"
+        android:paddingBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/userManagementErrorText" />
+    <!-- Empty state -->
+    <TextView
+        android:id="@+id/userManagementEmptyText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="32dp"
+        android:text="No user accounts were found."
+        android:textColor="#738096"
+        android:textSize="14sp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/userCreateButton" />
+</androidx.constraintlayout.widget.ConstraintLayout>

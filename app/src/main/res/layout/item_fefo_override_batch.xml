@@ -1,0 +1,67 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!-- Layout for first-expiry-first-out override batch. The Activity, Fragment or adapter uses these IDs to bind state and user actions. -->
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="10dp"
+    app:cardCornerRadius="10dp"
+    app:cardElevation="1dp"
+    app:strokeColor="@color/dmi_divider"
+    app:strokeWidth="1dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="14dp">
+
+        <!-- overrideBatchNumberText is referenced by the screen code when it renders or handles user input. -->
+        <TextView
+            android:id="@+id/overrideBatchNumberText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Batch"
+            android:textColor="@color/dmi_accent_dark"
+            android:textSize="17sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/overrideExpiryDateText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="7dp"
+            android:textColor="#738096" />
+
+        <TextView
+            android:id="@+id/overrideAvailableText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textColor="#738096" />
+
+        <TextView
+            android:id="@+id/overrideRecommendedText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textColor="@color/dmi_accent_dark"
+            android:textStyle="bold" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:hint="Override quantity"
+            app:boxStrokeColor="@color/dmi_input_stroke"
+            app:hintTextColor="@color/dmi_input_hint">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/overrideQuantityInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:maxLines="1" />
+        </com.google.android.material.textfield.TextInputLayout>
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

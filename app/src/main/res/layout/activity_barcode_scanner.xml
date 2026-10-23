@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Layout for barcode scanner. The Activity, Fragment or adapter uses these IDs to bind state and user actions. -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#111827">
+
+    <!-- Camera preview remains unobstructed by the theme background. -->
+    <!-- barcodeCameraPreview is referenced by the screen code when it renders or handles user input. -->
+    <androidx.camera.view.PreviewView
+        android:id="@+id/barcodeCameraPreview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <!-- Scanner controls -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fitsSystemWindows="true"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/barcodeBackButton"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="@color/dmi_accent"
+                android:contentDescription="Close scanner"
+                android:src="@android:drawable/ic_menu_close_clear_cancel"
+                app:tint="@android:color/white" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_weight="1"
+                android:text="Scan inventory code"
+                android:textColor="@android:color/white"
+                android:textSize="19sp"
+                android:textStyle="bold" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/barcodeTorchButton"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Flash"
+                android:textAllCaps="false"
+                android:textColor="@android:color/white"
+                app:backgroundTint="#CC172033"
+                app:cornerRadius="8dp"
+                app:strokeColor="@color/dmi_accent"
+                app:strokeWidth="2dp" />
+        </LinearLayout>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <!-- High-contrast instructions remain readable over live camera frames. -->
+        <View
+            android:layout_width="64dp"
+            android:layout_height="4dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="8dp"
+            android:background="@color/dmi_accent" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#CC172033"
+            android:gravity="center"
+            android:padding="14dp"
+            android:text="Point the camera at the barcode, QR code or Data Matrix"
+            android:textColor="@android:color/white"
+            android:textSize="15sp" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <!-- Manual entry and scanner status -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#F7FBFF"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:layout_marginBottom="12dp"
+                android:background="@color/dmi_accent" />
+
+            <!-- barcodeScanStatus reflects the latest state returned to the screen. -->
+            <TextView
+                android:id="@+id/barcodeScanStatus"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Preparing camera..."
+                android:textColor="#255A8C"
+                android:textSize="13sp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/barcodeCameraPermissionButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Allow camera access"
+                android:textColor="@android:color/white"
+                android:visibility="gone"
+                app:backgroundTint="@color/dmi_primary"
+                app:cornerRadius="8dp" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:hint="Or enter the code manually"
+                app:boxStrokeColor="@color/dmi_accent"
+                app:hintTextColor="@color/dmi_accent_dark">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/barcodeManualInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textVisiblePassword"
+                    android:maxLength="256"
+                    android:singleLine="true"
+                    android:textColor="#172033" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- barcodeManualSubmit starts a user-requested change; the ViewModel or repository remains responsible for validation. -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/barcodeManualSubmit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Use this code"
+                android:textAllCaps="false"
+                android:textColor="@android:color/white"
+                app:backgroundTint="@color/dmi_primary"
+                app:cornerRadius="8dp" />
+        </LinearLayout>
+    </LinearLayout>
+</FrameLayout>

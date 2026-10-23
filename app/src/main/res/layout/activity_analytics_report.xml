@@ -1,0 +1,1098 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Layout for analytics report. The Activity, Fragment or adapter uses these IDs to bind state and user actions. -->
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <!-- analyticsHeader is referenced by the screen code when it renders or handles user input. -->
+    <LinearLayout
+        android:id="@+id/analyticsHeader"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/dmi_accent"
+        android:fitsSystemWindows="true"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="8dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="8dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageButton
+            android:id="@+id/analyticsBackButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:padding="12dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Back"
+            android:src="@drawable/ic_back_button"
+            app:tint="@android:color/white"
+            android:scaleType="fitCenter"/>
+
+        <LinearLayout android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Analytics Report"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp"
+                android:textStyle="bold"/>
+
+            <TextView android:id="@+id/analyticsLastSyncText"
+                android:maxLines="2"
+                android:ellipsize="end"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="Local inventory data"
+                android:textColor="#E9F3FD"
+                android:textSize="11sp"/>
+
+        </LinearLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/analyticsRefreshButton"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="12dp"
+            android:text="Refresh"
+            android:textAllCaps="false"
+            android:textColor="#FFFFFF"
+            app:backgroundTint="@color/dmi_primary"
+            app:strokeColor="#FFFFFF"
+            app:strokeWidth="1dp"/>
+
+    </LinearLayout>
+
+
+    <!-- Keep the report body light during loading, error, and success states. -->
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#F5F7FA"
+        app:layout_constraintTop_toBottomOf="@id/analyticsHeader"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- analyticsProgress communicates that the screen is waiting for data or a submitted action. -->
+    <ProgressBar android:id="@+id/analyticsProgress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/analyticsHeader"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:indeterminateTint="@color/dmi_accent"/>
+
+
+    <!-- analyticsErrorText gives the user feedback when there is no content or an operation cannot complete. -->
+    <TextView android:id="@+id/analyticsErrorText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:gravity="center"
+        android:textColor="#B3261E"
+        android:textSize="14sp"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/analyticsHeader"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+
+    <androidx.core.widget.NestedScrollView android:id="@+id/analyticsContent"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        android:clipToPadding="false"
+        android:overScrollMode="ifContentScrolls"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/analyticsHeader"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="16dp"
+            android:paddingTop="16dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="32dp">
+
+
+            <TextView android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Current Inventory"
+                android:textColor="@color/dmi_accent_dark"
+                android:textSize="18sp"
+                android:textStyle="bold"/>
+
+
+            <TextView android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Snapshot of the locally available inventory state."
+                android:textColor="#738096"
+                android:textSize="12sp"/>
+
+
+            <LinearLayout android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:orientation="horizontal">
+
+                <com.google.android.material.card.MaterialCardView android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="6dp"
+                    android:layout_weight="1"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="1dp"
+                    app:cardBackgroundColor="#FFFFFF"
+                    app:strokeColor="@color/dmi_divider"
+                    app:strokeWidth="1dp">
+
+                    <LinearLayout android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:padding="14dp">
+
+                        <TextView android:id="@+id/activeMedicinesValue"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0"
+                            android:textColor="@color/black"
+                            android:textSize="23sp"
+                            android:textStyle="bold"/>
+
+                        <TextView android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Medicines"
+                            android:textColor="#738096"
+                            android:textSize="11sp"/>
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+
+                <com.google.android.material.card.MaterialCardView android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
+                    android:layout_weight="1"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="1dp"
+                    app:strokeColor="@color/dmi_divider"
+                    app:strokeWidth="1dp">
+
+                    <LinearLayout android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:padding="14dp">
+
+                        <TextView android:id="@+id/usableStockValue"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0"
+                            android:textColor="@color/black"
+                            android:textSize="23sp"
+                            android:textStyle="bold"/>
+
+                        <TextView android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Usable Units"
+                            android:textColor="#738096"
+                            android:textSize="11sp"/>
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+            </LinearLayout>
+
+
+            <LinearLayout android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:orientation="horizontal">
+
+                <com.google.android.material.card.MaterialCardView android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="4dp"
+                    android:layout_weight="1"
+                    app:cardCornerRadius="12dp"
+                    app:cardBackgroundColor="#FFFFFF"
+                    app:strokeColor="@color/dmi_divider"
+                    app:strokeWidth="1dp">
+
+                    <LinearLayout android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:padding="12dp">
+
+                        <TextView android:id="@+id/inStockValue"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0"
+                            android:textSize="20sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/black"/>
+
+                        <TextView android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="In Stock"
+                            android:textSize="10sp"/>
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+
+                <com.google.android.material.card.MaterialCardView android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginEnd="4dp"
+                    android:layout_weight="1"
+                    app:cardCornerRadius="12dp"
+                    app:cardBackgroundColor="#FFFFFF"
+                    app:strokeColor="@color/dmi_divider"
+                    app:strokeWidth="1dp">
+
+                    <LinearLayout android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:padding="12dp">
+
+                        <TextView android:id="@+id/lowStockValue"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0"
+                            android:textSize="20sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/black"/>
+
+                        <TextView android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Low Stock"
+                            android:textSize="10sp"/>
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+
+                <com.google.android.material.card.MaterialCardView android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:layout_weight="1"
+                    app:cardCornerRadius="12dp"
+                    app:cardBackgroundColor="#FFFFFF"
+                    app:strokeColor="@color/dmi_divider"
+                    app:strokeWidth="1dp">
+
+                    <LinearLayout android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:padding="12dp">
+
+                        <TextView android:id="@+id/outOfStockValue"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0"
+                            android:textSize="20sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/black"/>
+
+                        <TextView android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Out"
+                            android:textSize="10sp"/>
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+            </LinearLayout>
+
+
+            <LinearLayout android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:orientation="horizontal">
+
+                <com.google.android.material.card.MaterialCardView android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="4dp"
+                    android:layout_weight="1"
+                    app:cardCornerRadius="12dp"
+                    app:cardBackgroundColor="#FFFFFF"
+                    app:strokeColor="@color/dmi_divider"
+                    app:strokeWidth="1dp">
+
+                    <LinearLayout android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:padding="12dp">
+
+                        <TextView android:id="@+id/expiringSoonValue"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0"
+                            android:textSize="20sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/black"/>
+
+                        <TextView android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="Expiring ≤30d"
+                            android:textSize="10sp"/>
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+
+                <com.google.android.material.card.MaterialCardView android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginEnd="4dp"
+                    android:layout_weight="1"
+                    app:cardCornerRadius="12dp"
+                    app:cardBackgroundColor="#FFFFFF"
+                    app:strokeColor="@color/dmi_divider"
+                    app:strokeWidth="1dp">
+
+                    <LinearLayout android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:padding="12dp">
+
+                        <TextView android:id="@+id/expiredStockValue"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0"
+                            android:textSize="20sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/black"/>
+
+                        <TextView android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Expired Units"
+                            android:textSize="10sp"/>
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+
+                <com.google.android.material.card.MaterialCardView android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:layout_weight="1"
+                    app:cardCornerRadius="12dp"
+                    app:cardBackgroundColor="#FFFFFF"
+                    app:strokeColor="@color/dmi_divider"
+                    app:strokeWidth="1dp">
+
+                    <LinearLayout android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:padding="12dp">
+
+                        <TextView android:id="@+id/activeAlertsValue"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0"
+                            android:textSize="20sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/black"/>
+
+                        <TextView android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Active Alerts"
+                            android:textSize="10sp"/>
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+            </LinearLayout>
+
+            <com.google.android.material.card.MaterialCardView android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:cardCornerRadius="14dp"
+                app:cardElevation="1dp"
+                app:cardBackgroundColor="#FFFFFF"
+                app:strokeColor="@color/dmi_divider"
+                app:strokeWidth="1dp">
+
+                <LinearLayout android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Inventory Health"
+                        android:textColor="@color/dmi_accent_dark"
+                        android:textSize="16sp"
+                        android:textStyle="bold"/>
+
+                    <TextView android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="Current operational indicators derived from local inventory."
+                        android:textColor="#738096"
+                        android:textSize="11sp"/>
+
+
+                    <TextView android:id="@+id/healthyStockRateText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="14dp"
+                        android:text="Healthy medicine availability: —"
+                        android:textColor="#172033"
+                        android:textSize="13sp"
+                        android:textStyle="bold"/>
+
+
+                    <TextView android:id="@+id/reorderAttentionRateText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Medicines requiring stock attention: —"
+                        android:textColor="#172033"
+                        android:textSize="13sp"
+                        android:textStyle="bold"/>
+
+
+                    <TextView android:id="@+id/expiryExposureRateText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Usable stock expiring within 30 days: —"
+                        android:textColor="#172033"
+                        android:textSize="13sp"
+                        android:textStyle="bold"/>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <TextView android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="26dp"
+                android:text="Movement Period"
+                android:textColor="@color/dmi_accent_dark"
+                android:textSize="16sp"
+                android:textStyle="bold"/>
+
+
+            <com.google.android.material.button.MaterialButtonToggleGroup android:id="@+id/analyticsPeriodToggle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                app:checkedButton="@id/period30Button"
+                app:selectionRequired="true"
+                app:singleSelection="true">
+
+                <com.google.android.material.button.MaterialButton android:id="@+id/period7Button"
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="7 Days"
+                    android:textAllCaps="false"
+                    app:backgroundTint="@color/analytics_period_background_tint"
+                    android:textColor="@color/analytics_period_text_color"
+                    app:strokeColor="@color/analytics_period_stroke_color"
+                    app:strokeWidth="1dp"/>
+
+                <com.google.android.material.button.MaterialButton android:id="@+id/period30Button"
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="30 Days"
+                    android:textAllCaps="false"
+                    app:backgroundTint="@color/analytics_period_background_tint"
+                    android:textColor="@color/analytics_period_text_color"
+                    app:strokeColor="@color/analytics_period_stroke_color"
+                    app:strokeWidth="1dp"/>
+
+                <com.google.android.material.button.MaterialButton android:id="@+id/period90Button"
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="90 Days"
+                    android:textAllCaps="false"
+                    app:backgroundTint="@color/analytics_period_background_tint"
+                    android:textColor="@color/analytics_period_text_color"
+                    app:strokeColor="@color/analytics_period_stroke_color"
+                    app:strokeWidth="1dp"/>
+
+            </com.google.android.material.button.MaterialButtonToggleGroup>
+
+
+            <TextView android:id="@+id/movementPeriodDescription"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="Movement analytics: last 30 days"
+                android:textColor="#738096"
+                android:textSize="11sp"/>
+
+
+            <com.google.android.material.card.MaterialCardView android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                app:cardCornerRadius="14dp"
+                app:cardBackgroundColor="#FFFFFF"
+                app:strokeColor="@color/dmi_divider"
+                app:strokeWidth="1dp">
+
+                <LinearLayout android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Medicine Category Distribution"
+                        android:textColor="@color/dmi_accent_dark"
+                        android:textSize="16sp"
+                        android:textStyle="bold"/>
+
+                    <FrameLayout android:id="@+id/categoryChartContainer"
+                        android:layout_width="match_parent"
+                        android:layout_height="320dp"
+                        android:layout_marginTop="12dp">
+
+                        <TextView android:id="@+id/categoryDistributionText"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:text="Loading category distribution..."
+                            android:textColor="#738096"/>
+
+                    </FrameLayout>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+
+            <com.google.android.material.card.MaterialCardView android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                app:cardCornerRadius="14dp"
+                app:cardBackgroundColor="#FFFFFF"
+                app:strokeColor="@color/dmi_divider"
+                app:strokeWidth="1dp">
+
+                <LinearLayout android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Medicine Status Distribution"
+                        android:textColor="@color/dmi_accent_dark"
+                        android:textSize="16sp"
+                        android:textStyle="bold"/>
+
+                    <!-- stockStatusChartContainer reflects the latest state returned to the screen. -->
+                    <FrameLayout android:id="@+id/stockStatusChartContainer"
+                        android:layout_width="match_parent"
+                        android:layout_height="300dp"
+                        android:layout_marginTop="12dp">
+
+                        <TextView android:id="@+id/stockStatusDistributionText"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:text="Loading stock distribution..."
+                            android:textColor="#738096"/>
+
+                    </FrameLayout>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+
+            <com.google.android.material.card.MaterialCardView android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                app:cardCornerRadius="14dp"
+                app:cardBackgroundColor="#FFFFFF"
+                app:strokeColor="@color/dmi_divider"
+                app:strokeWidth="1dp">
+
+                <LinearLayout android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Expiry Overview"
+                        android:textColor="@color/dmi_accent_dark"
+                        android:textSize="16sp"
+                        android:textStyle="bold"/>
+
+                    <TextView android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="3dp"
+                        android:text="Available quantity grouped by expiry range"
+                        android:textColor="#738096"
+                        android:textSize="11sp"/>
+
+                    <FrameLayout android:id="@+id/expiryChartContainer"
+                        android:layout_width="match_parent"
+                        android:layout_height="300dp"
+                        android:layout_marginTop="12dp">
+
+                        <TextView android:id="@+id/expiryDistributionText"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:text="Loading expiry analytics..."
+                            android:textColor="#738096"/>
+
+                    </FrameLayout>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+
+            <com.google.android.material.card.MaterialCardView android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                app:cardCornerRadius="14dp"
+                app:cardBackgroundColor="#FFFFFF"
+                app:strokeColor="@color/dmi_divider"
+                app:strokeWidth="1dp">
+
+                <LinearLayout android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Alert Overview"
+                        android:textColor="@color/dmi_accent_dark"
+                        android:textSize="16sp"
+                        android:textStyle="bold"/>
+
+                    <TextView android:id="@+id/alertOverviewSummaryText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:textColor="#738096"
+                        android:textSize="11sp"/>
+
+                    <FrameLayout android:id="@+id/alertChartContainer"
+                        android:layout_width="match_parent"
+                        android:layout_height="280dp"
+                        android:layout_marginTop="12dp">
+
+                        <TextView android:id="@+id/alertDistributionText"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:text="Loading alert analytics..."
+                            android:textColor="#738096"/>
+
+                    </FrameLayout>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView android:id="@+id/abcVedAnalyticsSection"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:visibility="gone"
+                app:cardCornerRadius="14dp"
+                app:cardElevation="1dp"
+                app:cardBackgroundColor="#FFFFFF"
+                app:strokeColor="@color/dmi_divider"
+                app:strokeWidth="1dp">
+
+                <LinearLayout android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="ABC-VED Analytics"
+                        android:textColor="@color/dmi_accent_dark"
+                        android:textSize="16sp"
+                        android:textStyle="bold"/>
+
+
+                    <TextView android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="Restricted classification analytics for active medicines."
+                        android:textColor="#738096"
+                        android:textSize="11sp"/>
+
+
+                    <TextView android:id="@+id/abcVedCoverageText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:text="Classified active medicines: —"
+                        android:textColor="#172033"
+                        android:textSize="13sp"
+                        android:textStyle="bold"/>
+
+
+                    <TextView android:id="@+id/abcVedRefreshStatusText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="Restricted local classification cache"
+                        android:textColor="#738096"
+                        android:textSize="11sp"/>
+
+
+                    <TextView android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="18dp"
+                        android:text="ABC Distribution"
+                        android:textColor="@color/dmi_accent_dark"
+                        android:textSize="14sp"
+                        android:textStyle="bold"/>
+
+
+                    <FrameLayout android:id="@+id/abcDistributionChartContainer"
+                        android:layout_width="match_parent"
+                        android:layout_height="270dp"
+                        android:layout_marginTop="8dp">
+
+                        <TextView android:id="@+id/abcDistributionText"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:text="Loading ABC classifications..."
+                            android:textColor="#738096"/>
+
+                    </FrameLayout>
+
+
+                    <TextView android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="18dp"
+                        android:text="VED Distribution"
+                        android:textColor="@color/dmi_accent_dark"
+                        android:textSize="14sp"
+                        android:textStyle="bold"/>
+
+
+                    <FrameLayout android:id="@+id/vedDistributionChartContainer"
+                        android:layout_width="match_parent"
+                        android:layout_height="270dp"
+                        android:layout_marginTop="8dp">
+
+                        <TextView android:id="@+id/vedDistributionText"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:text="Loading VED classifications..."
+                            android:textColor="#738096"/>
+
+                    </FrameLayout>
+
+
+                    <TextView android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="18dp"
+                        android:text="ABC-VED Priority Matrix"
+                        android:textColor="@color/dmi_accent_dark"
+                        android:textSize="14sp"
+                        android:textStyle="bold"/>
+
+
+                    <TextView android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="3dp"
+                        android:text="Number of active medicines in each combined classification."
+                        android:textColor="#738096"
+                        android:textSize="11sp"/>
+
+
+                    <LinearLayout android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:orientation="horizontal">
+
+                        <TextView android:id="@+id/abcVedAvText"
+                            android:layout_width="0dp"
+                            android:layout_height="64dp"
+                            android:layout_margin="3dp"
+                            android:layout_weight="1"
+                            android:background="#E7F1FC"
+                            android:gravity="center"
+                            android:text="AV\n0"
+                            android:textColor="@color/dmi_primary"
+                            android:textStyle="bold"/>
+
+                        <TextView android:id="@+id/abcVedAeText"
+                            android:layout_width="0dp"
+                            android:layout_height="64dp"
+                            android:layout_margin="3dp"
+                            android:layout_weight="1"
+                            android:background="#E7F1FC"
+                            android:gravity="center"
+                            android:text="AE\n0"
+                            android:textColor="@color/dmi_primary"
+                            android:textStyle="bold"/>
+
+                        <TextView android:id="@+id/abcVedAdText"
+                            android:layout_width="0dp"
+                            android:layout_height="64dp"
+                            android:layout_margin="3dp"
+                            android:layout_weight="1"
+                            android:background="#E7F1FC"
+                            android:gravity="center"
+                            android:text="AD\n0"
+                            android:textColor="@color/dmi_primary"
+                            android:textStyle="bold"/>
+
+                    </LinearLayout>
+
+
+                    <LinearLayout android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView android:id="@+id/abcVedBvText"
+                            android:layout_width="0dp"
+                            android:layout_height="64dp"
+                            android:layout_margin="3dp"
+                            android:layout_weight="1"
+                            android:background="@color/dmi_accent_light"
+                            android:gravity="center"
+                            android:text="BV\n0"
+                            android:textColor="@color/dmi_primary"
+                            android:textStyle="bold"/>
+
+                        <TextView android:id="@+id/abcVedBeText"
+                            android:layout_width="0dp"
+                            android:layout_height="64dp"
+                            android:layout_margin="3dp"
+                            android:layout_weight="1"
+                            android:background="@color/dmi_accent_light"
+                            android:gravity="center"
+                            android:text="BE\n0"
+                            android:textColor="@color/dmi_primary"
+                            android:textStyle="bold"/>
+
+                        <TextView android:id="@+id/abcVedBdText"
+                            android:layout_width="0dp"
+                            android:layout_height="64dp"
+                            android:layout_margin="3dp"
+                            android:layout_weight="1"
+                            android:background="@color/dmi_accent_light"
+                            android:gravity="center"
+                            android:text="BD\n0"
+                            android:textColor="@color/dmi_primary"
+                            android:textStyle="bold"/>
+
+                    </LinearLayout>
+
+
+                    <LinearLayout android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView android:id="@+id/abcVedCvText"
+                            android:layout_width="0dp"
+                            android:layout_height="64dp"
+                            android:layout_margin="3dp"
+                            android:layout_weight="1"
+                            android:background="@color/dmi_accent_light"
+                            android:gravity="center"
+                            android:text="CV\n0"
+                            android:textColor="@color/dmi_primary"
+                            android:textStyle="bold"/>
+
+                        <TextView android:id="@+id/abcVedCeText"
+                            android:layout_width="0dp"
+                            android:layout_height="64dp"
+                            android:layout_margin="3dp"
+                            android:layout_weight="1"
+                            android:background="@color/dmi_accent_light"
+                            android:gravity="center"
+                            android:text="CE\n0"
+                            android:textColor="@color/dmi_primary"
+                            android:textStyle="bold"/>
+
+                        <TextView android:id="@+id/abcVedCdText"
+                            android:layout_width="0dp"
+                            android:layout_height="64dp"
+                            android:layout_margin="3dp"
+                            android:layout_weight="1"
+                            android:background="@color/dmi_accent_light"
+                            android:gravity="center"
+                            android:text="CD\n0"
+                            android:textColor="@color/dmi_primary"
+                            android:textStyle="bold"/>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                app:cardCornerRadius="14dp"
+                app:cardBackgroundColor="#FFFFFF"
+                app:strokeColor="@color/dmi_divider"
+                app:strokeWidth="1dp">
+
+                <LinearLayout android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Movement Activity"
+                        android:textColor="@color/dmi_accent_dark"
+                        android:textSize="16sp"
+                        android:textStyle="bold"/>
+
+                    <TextView android:id="@+id/movementSummaryText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:textColor="#445066"
+                        android:textSize="13sp"/>
+
+                    <TextView android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="18dp"
+                        android:text="Movement Type Distribution"
+                        android:textColor="@color/dmi_accent_dark"
+                        android:textSize="14sp"
+                        android:textStyle="bold"/>
+
+
+                    <FrameLayout android:id="@+id/movementTypeChartContainer"
+                        android:layout_width="match_parent"
+                        android:layout_height="280dp"
+                        android:layout_marginTop="8dp">
+
+                        <TextView android:id="@+id/movementTypeDistributionText"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:text="Loading movement types..."
+                            android:textColor="#738096"/>
+
+                    </FrameLayout>
+
+
+                    <TextView android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="18dp"
+                        android:text="Received vs Issued Trend"
+                        android:textColor="@color/dmi_accent_dark"
+                        android:textSize="14sp"
+                        android:textStyle="bold"/>
+
+                    <FrameLayout android:id="@+id/movementTrendChartContainer"
+                        android:layout_width="match_parent"
+                        android:layout_height="310dp"
+                        android:layout_marginTop="10dp">
+
+                        <TextView android:id="@+id/movementTrendText"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:text="Loading movement trend..."
+                            android:textColor="#738096"/>
+
+                    </FrameLayout>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+
+            <com.google.android.material.card.MaterialCardView android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="24dp"
+                app:cardCornerRadius="14dp"
+                app:cardBackgroundColor="#FFFFFF"
+                app:strokeColor="@color/dmi_divider"
+                app:strokeWidth="1dp">
+
+                <LinearLayout android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Most Issued Medicines"
+                        android:textColor="@color/dmi_accent_dark"
+                        android:textSize="16sp"
+                        android:textStyle="bold"/>
+
+                    <FrameLayout android:id="@+id/topIssuedChartContainer"
+                        android:layout_width="match_parent"
+                        android:layout_height="300dp"
+                        android:layout_marginTop="12dp">
+
+                        <TextView android:id="@+id/topIssuedText"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:text="Loading medicine movement..."
+                            android:textColor="#738096"/>
+
+                    </FrameLayout>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

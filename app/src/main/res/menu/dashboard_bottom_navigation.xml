@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/nav_dashboard"
+        android:icon="@drawable/ic_dashboard_button"
+        android:title="Dashboard" />
+
+    <item
+        android:id="@+id/nav_inventory"
+        android:icon="@drawable/ic_inventory_button"
+        android:title="Inventory" />
+
+    <item
+        android:id="@+id/nav_alerts"
+        android:icon="@drawable/ic_alerts_button"
+        android:title="Alerts" />
+
+    <item
+        android:id="@+id/nav_reports"
+        android:icon="@drawable/ic_reports_icon"
+        android:title="Reports" />
+
+    <item
+        android:id="@+id/nav_more"
+        android:icon="@drawable/ic_more_button"
+        android:title="More" />
+
+</menu>

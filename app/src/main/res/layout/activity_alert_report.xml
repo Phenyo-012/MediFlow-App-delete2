@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Layout for alert report. The Activity, Fragment or adapter uses these IDs to bind state and user actions. -->
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F5F7FA">
+
+    <!-- alertReportHeader is referenced by the screen code when it renders or handles user input. -->
+    <LinearLayout
+        android:id="@+id/alertReportHeader"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:orientation="vertical"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <!-- Blue toolbar; filters below remain on white for contrast. -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/dmi_accent"
+            android:fitsSystemWindows="true"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="8dp"
+            android:paddingTop="28dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="8dp">
+
+            <ImageButton
+                android:id="@+id/alertReportBackButton"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="12dp"
+                android:padding="12dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Back"
+                android:src="@drawable/ic_back_button"
+                app:tint="@android:color/white"
+                android:scaleType="fitCenter" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Alert Report"
+                android:textColor="@android:color/white"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="16dp"
+            android:paddingTop="8dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="16dp">
+
+            <Spinner
+                android:id="@+id/alertReportPeriodSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="10dp"
+                android:backgroundTint="@color/dmi_primary" />
+
+            <LinearLayout
+                android:id="@+id/alertReportCustomDateContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/alertReportStartDateButton"
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Start Date"
+                    android:textColor="@color/dmi_accent_dark"
+                    app:strokeColor="@color/dmi_accent" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/alertReportEndDateButton"
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1"
+                    android:text="End Date"
+                    android:textColor="@color/dmi_accent_dark"
+                    app:strokeColor="@color/dmi_accent" />
+
+            </LinearLayout>
+
+            <Spinner
+                android:id="@+id/alertReportMedicineSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="8dp"
+                android:backgroundTint="@color/dmi_primary" />
+
+            <Spinner
+                android:id="@+id/alertReportBatchSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:backgroundTint="@color/dmi_primary" />
+
+            <Spinner
+                android:id="@+id/alertReportTypeSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="8dp"
+                android:backgroundTint="@color/dmi_primary" />
+
+            <!-- alertReportStatusSpinner reflects the latest state returned to the screen. -->
+            <Spinner
+                android:id="@+id/alertReportStatusSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:backgroundTint="@color/dmi_primary" />
+
+            <TextView
+                android:id="@+id/alertReportPeriodText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:textColor="#446B92"
+                android:textSize="12sp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/alertReportFreshnessNotice"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/dmi_accent_light"
+        android:padding="10dp"
+        android:text="Based on locally available alert history."
+        android:textColor="#315D89"
+        android:textSize="12sp"
+        app:layout_constraintTop_toBottomOf="@id/alertReportHeader"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- alertReportRecyclerView displays the current rows; its adapter supplies the values and click behavior. -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/alertReportRecyclerView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="16dp"
+        android:clipToPadding="false"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/alertReportFreshnessNotice"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- alertReportProgress communicates that the screen is waiting for data or a submitted action. -->
+    <ProgressBar
+        android:id="@+id/alertReportProgress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminateTint="@color/dmi_accent"
+        app:layout_constraintTop_toBottomOf="@id/alertReportFreshnessNotice"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/alertReportEmptyText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="32dp"
+        android:text="No alerts match the selected report filters."
+        android:textColor="#738096"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/alertReportFreshnessNotice"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

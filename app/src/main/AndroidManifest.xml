@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Android application manifest: declares screens, permissions and platform-level app configuration. -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <!-- The app needs network access to reach Firebase and the trusted backend. -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- The app checks connectivity before attempting remote synchronization. -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!-- Notification access lets Android display inventory alerts; recent Android versions also require runtime consent. -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!-- Camera access supports barcode scanning and should be requested when scanning is used. -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
+
+    <application
+        android:name=".MedicationInventoryApplication"
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="MediFlow"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.Digitalmedicationinventory">
+        <activity
+            android:name=".ui.auth.LoginActivity"
+            android:exported="true"
+            android:windowSoftInputMode="adjustResize">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+        </activity>
+        <activity
+            android:name=".ui.dashboard.DashboardActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".ui.scanner.BarcodeScannerActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.inventory.InventoryActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.medicine.AddMedicineActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.medicine.MedicineDetailsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.receive.ReceiveStockActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.issue.FefoReviewActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.issue.IssueStockActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.movement.MovementHistoryActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.adjustment.AdjustmentActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.correction.CorrectionActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.alerts.AlertsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.reorder.ReorderRecommendationsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.reports.ReportsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.reports.analytics.AnalyticsReportActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.reports.stock.StockLevelReportActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.reports.alert.AlertReportActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.reports.movement.MovementReportActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.audit.AuditLogActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.account.AccountSecurityActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".ui.more.MoreActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.sync.SyncStatusActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.sync.SyncDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.users.UserManagementActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.users.UserDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.users.CreateUserActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".ui.settings.SettingsActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+    </application>
+
+</manifest>

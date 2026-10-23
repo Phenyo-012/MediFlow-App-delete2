@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Give this build variant a distinct label for testing and QA installs. -->
+    <application
+        android:label="MediFlow Staging"
+        tools:replace="android:label" />
+
+</manifest>

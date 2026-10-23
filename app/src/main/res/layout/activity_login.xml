@@ -1,0 +1,162 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!-- Layout for login. The Activity, Fragment or adapter uses these IDs to bind state and user actions. -->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <ImageView
+            android:layout_width="220dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="6dp"
+            android:adjustViewBounds="true"
+            android:contentDescription="MediFlow"
+            android:src="@drawable/logo_mediflow_wordmark" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:text="Track smart. Store better. Grow faster."
+            android:textColor="@color/dmi_accent_dark"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="32dp"
+            android:text="Sign in to continue"
+            android:textSize="16sp" />
+
+        <!-- emailLayout is referenced by the screen code when it renders or handles user input. -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/emailLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:hint="Email address"
+            app:boxStrokeColor="@color/dmi_input_stroke"
+            app:hintTextColor="@color/dmi_input_hint">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/emailInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textEmailAddress"
+                android:singleLine="true" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/passwordLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:hint="Password"
+            app:boxStrokeColor="@color/dmi_input_stroke"
+            app:endIconMode="password_toggle"
+            app:endIconTint="@color/dmi_accent"
+            app:hintTextColor="@color/dmi_input_hint">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/passwordInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"
+                android:singleLine="true" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- loginError gives the user feedback when there is no content or an operation cannot complete. -->
+        <TextView
+            android:id="@+id/loginError"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:textColor="?attr/colorError"
+            android:visibility="gone" />
+
+        <!-- loginProgress communicates that the screen is waiting for data or a submitted action. -->
+        <ProgressBar
+            android:id="@+id/loginProgress"
+            style="?android:attr/progressBarStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:indeterminateTint="@color/dmi_accent"
+            android:progressTint="@color/dmi_accent"
+            android:visibility="gone" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/signInButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Sign in"
+            android:textColor="@color/dmi_primary_button_text"
+            app:backgroundTint="@color/dmi_primary_button_background" />
+
+
+        <!-- Visible only if Firebase requests a TOTP for an already-enrolled user. -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/totpLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:hint="Authenticator code"
+            android:visibility="gone">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/totpInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="numberPassword"
+                android:maxLength="6"
+                android:singleLine="true" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/verifyTotpButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="Verify authenticator code"
+            android:visibility="gone" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/cancelTotpButton"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Back to sign in"
+            android:visibility="gone" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/offlineUnlockButton"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Unlock saved session (offline)"
+            android:textColor="@color/dmi_outlined_text"
+            android:visibility="gone"
+            app:strokeColor="@color/dmi_outlined_stroke"
+            app:cornerRadius="24dp"/>
+
+        <TextView
+            android:id="@+id/offlineUnlockHint"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:text="First sign in online, then unlock offline using your device security. Offline access expires after 24 hours."
+            android:textSize="12sp" />
+    </LinearLayout>
+</ScrollView>

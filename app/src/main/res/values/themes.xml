@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Global MediFlow light theme: replaces Material 3's default purple palette -->
+    <style name="Base.Theme.Digitalmedicationinventory" parent="Theme.Material3.Light.NoActionBar">
+        <item name="colorPrimary">@color/dmi_primary</item>
+        <item name="colorOnPrimary">@color/dmi_on_primary</item>
+        <item name="colorPrimaryContainer">@color/dmi_primary_light</item>
+        <item name="colorOnPrimaryContainer">@color/dmi_primary_dark</item>
+
+        <item name="colorSecondary">@color/dmi_accent</item>
+        <item name="colorOnSecondary">@color/dmi_on_primary</item>
+        <item name="colorSecondaryContainer">@color/dmi_accent_light</item>
+        <item name="colorOnSecondaryContainer">@color/dmi_accent_dark</item>
+
+        <item name="colorTertiary">@color/dmi_accent</item>
+        <item name="colorOnTertiary">@color/dmi_on_primary</item>
+        <item name="colorTertiaryContainer">@color/dmi_primary_light</item>
+        <item name="colorOnTertiaryContainer">@color/dmi_primary_dark</item>
+
+        <item name="colorSurface">@color/dmi_surface</item>
+        <item name="colorOnSurface">@color/dmi_text</item>
+        <item name="colorSurfaceVariant">@color/dmi_bg</item>
+        <item name="android:colorBackground">@color/dmi_bg</item>
+        <item name="colorOnSurfaceVariant">@color/dmi_text_secondary</item>
+        <item name="colorOutline">@color/dmi_divider</item>
+
+        <item name="colorAccent">@color/dmi_accent</item>
+        <item name="android:colorAccent">@color/dmi_accent</item>
+        <item name="colorControlActivated">@color/dmi_accent</item>
+        <item name="android:statusBarColor">@color/dmi_primary_dark</item>
+        <item name="android:windowLightStatusBar">false</item>
+    </style>
+
+    <!-- Keep the existing application theme name used by AndroidManifest.xml -->
+    <style name="Theme.Digitalmedicationinventory" parent="Base.Theme.Digitalmedicationinventory" />
+
+    <!-- Keep existing activity-specific overlay for any layout that references it -->
+    <style name="AddMedicineThemeOverlay">
+        <item name="colorPrimary">@color/dmi_primary</item>
+        <item name="colorSecondary">@color/dmi_accent</item>
+        <item name="colorControlActivated">@color/dmi_accent</item>
+    </style>
+</resources>

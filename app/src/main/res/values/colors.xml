@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <!-- MediFlow brand palette (from the logo): navy + teal -->
+    <color name="dmi_primary">#09325D</color>
+    <color name="dmi_primary_dark">#062540</color>
+    <color name="dmi_primary_light">#DDE8F2</color>
+    <color name="dmi_on_primary">#FFFFFF</color>
+
+    <color name="dmi_accent">#0A929A</color>
+    <color name="dmi_accent_dark">#07767D</color>
+    <color name="dmi_accent_light">#E3F3F4</color>
+
+    <!-- Neutrals -->
+    <color name="dmi_bg">#F4F7F8</color>
+    <color name="dmi_surface">#FFFFFF</color>
+    <color name="dmi_text">#0F1B2D</color>
+    <color name="dmi_text_secondary">#5F6E7C</color>
+    <color name="dmi_divider">#E1E8EC</color>
+
+    <!-- Status colors (used sparingly, only for meaning) -->
+    <color name="dmi_warning">#B45309</color>
+    <color name="dmi_danger">#B42318</color>
+
+    <color name="add_medicine_blue">#0A929A</color>
+</resources>

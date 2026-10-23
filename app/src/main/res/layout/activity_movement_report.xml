@@ -1,0 +1,194 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!-- Layout for movement report. The Activity, Fragment or adapter uses these IDs to bind state and user actions. -->
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F5F7FA">
+
+    <!-- movementReportHeader is referenced by the screen code when it renders or handles user input. -->
+    <LinearLayout
+        android:id="@+id/movementReportHeader"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:fitsSystemWindows="true"
+        android:orientation="vertical"
+        android:padding="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/movementReportBackButton"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="12dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Back"
+                android:padding="12dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_back_button"
+                app:tint="@color/dmi_accent" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Movement Report"
+                    android:textColor="@color/dmi_accent_dark"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="Inventory transaction history"
+                    android:textColor="#738096"
+                    android:textSize="12sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <Spinner
+            android:id="@+id/movementReportPeriodSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="8dp"
+            android:backgroundTint="@color/dmi_primary" />
+
+        <LinearLayout
+            android:id="@+id/movementReportCustomDateContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/movementReportStartDateButton"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Start Date"
+                android:textColor="@color/dmi_outlined_text"
+                app:strokeColor="@color/dmi_outlined_stroke" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/movementReportEndDateButton"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                android:text="End Date"
+                android:textColor="@color/dmi_outlined_text"
+                app:strokeColor="@color/dmi_outlined_stroke" />
+        </LinearLayout>
+
+        <Spinner
+            android:id="@+id/movementReportMedicineSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:backgroundTint="@color/dmi_primary" />
+
+        <Spinner
+            android:id="@+id/movementReportBatchSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:backgroundTint="@color/dmi_primary" />
+
+        <Spinner
+            android:id="@+id/movementReportTypeSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:backgroundTint="@color/dmi_primary" />
+
+        <TextView
+            android:id="@+id/movementReportPeriodText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textColor="#738096"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/movementReportFreshnessNotice"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/dmi_accent_light"
+        android:padding="10dp"
+        android:text="Based on locally available transaction history."
+        android:textColor="#3B5F75"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/movementReportHeader" />
+
+    <!-- movementReportRecyclerView displays the current rows; its adapter supplies the values and click behavior. -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/movementReportRecyclerView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:clipToPadding="false"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/movementReportLoadMoreButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/movementReportFreshnessNotice" />
+
+    <!-- movementReportProgress communicates that the screen is waiting for data or a submitted action. -->
+    <ProgressBar
+        android:id="@+id/movementReportProgress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminateTint="@color/dmi_accent"
+        android:progressTint="@color/dmi_accent"
+        app:layout_constraintBottom_toTopOf="@id/movementReportLoadMoreButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/movementReportFreshnessNotice" />
+
+    <!-- movementReportEmptyText gives the user feedback when there is no content or an operation cannot complete. -->
+    <TextView
+        android:id="@+id/movementReportEmptyText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="32dp"
+        android:text="No inventory movements match the selected report filters."
+        android:textColor="#738096"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/movementReportLoadMoreButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/movementReportFreshnessNotice" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/movementReportLoadMoreButton"
+        style="?attr/materialButtonOutlinedStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="Load More"
+        android:textColor="@color/dmi_outlined_text"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:strokeColor="@color/dmi_outlined_stroke" />
+</androidx.constraintlayout.widget.ConstraintLayout>

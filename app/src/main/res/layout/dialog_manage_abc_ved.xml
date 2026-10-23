@@ -1,0 +1,87 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!-- Layout for manage ABC VED. The Activity, Fragment or adapter uses these IDs to bind state and user actions. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingStart="24dp"
+    android:paddingTop="8dp"
+    android:paddingEnd="24dp"
+    android:paddingBottom="8dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="ABC Classification"
+        android:textColor="#172033"
+        android:textSize="14sp"
+        android:textStyle="bold" />
+
+    <!-- abcRadioGroup is referenced by the screen code when it renders or handles user input. -->
+    <RadioGroup
+        android:id="@+id/abcRadioGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:orientation="vertical">
+
+        <RadioButton
+            android:id="@+id/abcARadio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:buttonTint="@color/dmi_control_tint"
+            android:text="Group A" />
+
+        <RadioButton
+            android:id="@+id/abcBRadio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:buttonTint="@color/dmi_control_tint"
+            android:text="Group B" />
+
+        <RadioButton
+            android:id="@+id/abcCRadio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:buttonTint="@color/dmi_control_tint"
+            android:text="Group C" />
+    </RadioGroup>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="18dp"
+        android:text="VED Classification"
+        android:textColor="#172033"
+        android:textSize="14sp"
+        android:textStyle="bold" />
+
+    <RadioGroup
+        android:id="@+id/vedRadioGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:orientation="vertical">
+
+        <RadioButton
+            android:id="@+id/vedVRadio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:buttonTint="@color/dmi_control_tint"
+            android:text="Vital" />
+
+        <RadioButton
+            android:id="@+id/vedERadio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:buttonTint="@color/dmi_control_tint"
+            android:text="Essential" />
+
+        <RadioButton
+            android:id="@+id/vedDRadio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:buttonTint="@color/dmi_control_tint"
+            android:text="Desirable" />
+    </RadioGroup>
+</LinearLayout>

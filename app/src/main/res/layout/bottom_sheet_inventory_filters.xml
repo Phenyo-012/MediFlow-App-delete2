@@ -1,0 +1,199 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!-- Layout for bottom sheet inventory filters. The Activity, Fragment or adapter uses these IDs to bind state and user actions. -->
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingStart="20dp"
+        android:paddingTop="18dp"
+        android:paddingEnd="20dp"
+        android:paddingBottom="24dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Filter &amp; Sort"
+            android:textColor="@color/dmi_accent_dark"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="16dp"
+            android:text="Combine filters with search. Expiry ranges use batch quantities; stock status uses usable units."
+            android:textColor="#738096"
+            android:textSize="12sp" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Medicine category"
+            app:boxStrokeColor="@color/dmi_input_stroke"
+            app:hintTextColor="@color/dmi_input_hint">
+
+            <!-- filterCategoryInput lets the user narrow what is shown without changing the underlying medicine records. -->
+            <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                android:id="@+id/filterCategoryInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="none" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:hint="Stock status"
+            app:boxStrokeColor="@color/dmi_input_stroke"
+            app:hintTextColor="@color/dmi_input_hint">
+
+            <!-- filterStockInput lets the user narrow what is shown without changing the underlying medicine records. -->
+            <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                android:id="@+id/filterStockInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="none" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:hint="Expiry risk (medicines with stock in range)"
+            app:boxStrokeColor="@color/dmi_input_stroke"
+            app:hintTextColor="@color/dmi_input_hint">
+
+            <!-- filterExpiryInput lets the user narrow what is shown without changing the underlying medicine records. -->
+            <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                android:id="@+id/filterExpiryInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="none" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:hint="Sort medicines"
+            app:boxStrokeColor="@color/dmi_input_stroke"
+            app:hintTextColor="@color/dmi_input_hint">
+
+            <!-- filterSortInput lets the user narrow what is shown without changing the underlying medicine records. -->
+            <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                android:id="@+id/filterSortInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="none" />
+        </com.google.android.material.textfield.TextInputLayout>
+        <!-- This complete section remains GONE without VIEW_ABC_VED. -->
+        <LinearLayout
+            android:id="@+id/filterClassificationSection"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Restricted ABC/VED filters"
+                android:textColor="#172033"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:hint="ABC classification"
+                app:boxStrokeColor="@color/dmi_input_stroke"
+                app:hintTextColor="@color/dmi_input_hint">
+
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                    android:id="@+id/filterAbcInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="none" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:hint="VED classification"
+                app:boxStrokeColor="@color/dmi_input_stroke"
+                app:hintTextColor="@color/dmi_input_hint">
+
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                    android:id="@+id/filterVedInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="none" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/filterClassificationStatusText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Restricted classifications are cached locally and may be incomplete offline."
+                android:textColor="#738096"
+                android:textSize="11sp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/filterRefreshClassificationButton"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Refresh classifications"
+                android:textAllCaps="false"
+                android:textColor="@color/dmi_outlined_text"
+                app:strokeColor="@color/dmi_outlined_stroke" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:gravity="end"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/filterClearButton"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Reset"
+                android:textAllCaps="false"
+                android:textColor="@color/dmi_outlined_text"
+                app:strokeColor="@color/dmi_outlined_stroke" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/filterApplyButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:text="Apply Filters"
+                android:textAllCaps="false"
+                android:textColor="@color/dmi_primary_button_text"
+                app:backgroundTint="@color/dmi_primary_button_background" />
+        </LinearLayout>
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

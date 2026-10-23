@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Layout for create user. The Activity, Fragment or adapter uses these IDs to bind state and user actions. -->
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F5F7FA"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="24dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fitsSystemWindows="true"
+            android:background="@color/dmi_accent"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="16dp">
+
+            <!-- createUserBackButton is referenced by the screen code when it renders or handles user input. -->
+            <ImageButton
+                android:id="@+id/createUserBackButton"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:padding="12dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Back"
+                android:src="@drawable/ic_back_button"
+                app:tint="@android:color/white"
+                android:scaleType="fitCenter"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:text="Create User"
+                android:textColor="@android:color/white"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Create an application user"
+                android:textColor="#3278BF"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="The selected role will determine the user's initial baseline permissions."
+                android:textColor="#738096"
+                android:textSize="13sp" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:hint="First name"
+                app:boxStrokeColor="@color/create_user_input_stroke"
+                app:hintTextColor="@color/create_user_hint_color">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/createUserFirstNameInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPersonName"
+                    android:singleLine="true" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:hint="Last name"
+                app:boxStrokeColor="@color/create_user_input_stroke"
+                app:hintTextColor="@color/create_user_hint_color">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/createUserLastNameInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPersonName"
+                    android:singleLine="true" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:hint="Email address"
+                app:boxStrokeColor="@color/create_user_input_stroke"
+                app:hintTextColor="@color/create_user_hint_color">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/createUserEmailInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textEmailAddress"
+                    android:singleLine="true" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:hint="Temporary password"
+                app:boxStrokeColor="@color/create_user_input_stroke"
+                app:endIconMode="password_toggle"
+                app:endIconTint="@color/create_user_input_stroke"
+                app:hintTextColor="@color/create_user_hint_color">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/createUserPasswordInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPassword"
+                    android:singleLine="true" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/createUserRoleButton"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Select Role"
+                android:textColor="#3278BF"
+                app:strokeColor="@color/dmi_accent" />
+
+            <!-- createUserRoleProgress communicates that the screen is waiting for data or a submitted action. -->
+            <ProgressBar
+                android:id="@+id/createUserRoleProgress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="12dp"
+                android:indeterminateTint="@color/dmi_accent"
+                android:visibility="gone" />
+
+            <!-- createUserErrorText gives the user feedback when there is no content or an operation cannot complete. -->
+            <TextView
+                android:id="@+id/createUserErrorText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:textColor="#B3261E"
+                android:textSize="13sp"
+                android:visibility="gone" />
+
+            <!-- createUserSubmitButton starts a user-requested change; the ViewModel or repository remains responsible for validation. -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/createUserSubmitButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:enabled="false"
+                android:text="Create User"
+                android:textColor="@color/create_user_submit_text"
+                app:backgroundTint="@color/create_user_submit_background" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>

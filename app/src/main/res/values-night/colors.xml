@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="dmi_primary">#1E5A8E</color>
+    <color name="dmi_primary_dark">#0E2A47</color>
+    <color name="dmi_primary_light">#16283C</color>
+    <color name="dmi_accent">#3CBAC2</color>
+    <color name="dmi_accent_dark">#5CCDD4</color>
+    <color name="dmi_accent_light">#12383D</color>
+    <color name="dmi_bg">#0E1621</color>
+    <color name="dmi_surface">#162231</color>
+    <color name="dmi_text">#F1F5F8</color>
+    <color name="dmi_text_secondary">#9FB0BF</color>
+    <color name="dmi_divider">#263648</color>
+    <color name="dmi_warning">#F5A623</color>
+    <color name="dmi_danger">#F87171</color>
+</resources>

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "629377387423",
+    "project_id": "digital-medication-inventory",
+    "storage_bucket": "digital-medication-inventory.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:629377387423:android:0528cf4b253e4353218baa",
+        "android_client_info": {
+          "package_name": "com.medicationinventory"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDKfvRULA9TNSYiGsH-PLNzULKmStHpCAA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

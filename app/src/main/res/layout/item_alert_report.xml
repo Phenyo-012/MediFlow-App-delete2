@@ -1,0 +1,93 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!-- Layout for alert report. The Activity, Fragment or adapter uses these IDs to bind state and user actions. -->
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="16dp"
+    android:layout_marginTop="6dp"
+    android:layout_marginEnd="16dp"
+    android:layout_marginBottom="6dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="1dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <!-- alertReportTypeText is referenced by the screen code when it renders or handles user input. -->
+            <TextView
+                android:id="@+id/alertReportTypeText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="LOW STOCK"
+                android:textColor="#172033"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <!-- alertReportStatusText reflects the latest state returned to the screen. -->
+            <TextView
+                android:id="@+id/alertReportStatusText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="RESOLVED"
+                android:textColor="#738096"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/alertReportMedicineText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Paracetamol · PAR500"
+            android:textColor="#25364D"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/alertReportBatchText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Batch: LOT-001"
+            android:textColor="#738096"
+            android:textSize="12sp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/alertReportSeverityText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="Severity: HIGH"
+            android:textColor="#738096"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/alertReportMessageText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="7dp"
+            android:textColor="#4E5969"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/alertReportCreatedText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="9dp"
+            android:text="Created: 01 Oct 2026 10:30"
+            android:textColor="#738096"
+            android:textSize="12sp" />
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

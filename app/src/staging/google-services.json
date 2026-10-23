@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "880813831030",
+    "project_id": "mediflow-staging-14277",
+    "storage_bucket": "mediflow-staging-14277.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:880813831030:android:f821e93b812b01f2f18057",
+        "android_client_info": {
+          "package_name": "com.medicationinventory.staging"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDzZ6PLDU9_D9svHBg1_Noo-Cg8NxgjJL8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

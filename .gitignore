@@ -1,0 +1,54 @@
+*.iml
+.gradle
+/local.properties
+/.idea/caches
+/.idea/libraries
+/.idea/modules.xml
+/.idea/workspace.xml
+/.idea/navEditor.xml
+/.idea/assetWizardSettings.xml
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx
+local.properties
+
+.vercel
+
+# Android Studio and Gradle
+.gradle/
+.idea/
+**/build/
+local.properties
+*.iml
+
+# Firebase local configuration
+.env
+.env.*
+!.env.example
+**/*service-account*.json
+**/*firebase-adminsdk*.json
+
+# Private keys and credentials
+*.jks
+*.keystore
+*.p12
+*.pfx
+*.pem
+*.key
+key.properties
+secrets.properties
+
+# Node.js and deployment
+**/node_modules/
+.vercel/
+.firebase/
+coverage/
+
+# Generated and temporary files
+*.log
+*.zip
+*.db
+*.sqlite
+*.sqlite3

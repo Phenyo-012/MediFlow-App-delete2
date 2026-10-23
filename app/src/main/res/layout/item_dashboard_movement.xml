@@ -1,0 +1,49 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!-- Layout for dashboard movement. The Activity, Fragment or adapter uses these IDs to bind state and user actions. -->
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="10dp"
+    android:foreground="?attr/selectableItemBackground"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="1dp"
+    app:strokeColor="@color/dmi_divider"
+    app:strokeWidth="1dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="15dp">
+
+        <!-- dashboardMovementMedicine is referenced by the screen code when it renders or handles user input. -->
+        <TextView
+            android:id="@+id/dashboardMovementMedicine"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Medicine"
+            android:textColor="#172033"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <!-- dashboardMovementSummary reflects the latest state returned to the screen. -->
+        <TextView
+            android:id="@+id/dashboardMovementSummary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Receipt • +20"
+            android:textColor="#526174"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/dashboardMovementMeta"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="Batch B001 • 5m ago • Confirmed"
+            android:textColor="#738096"
+            android:textSize="11sp" />
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

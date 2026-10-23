@@ -1,0 +1,234 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!-- Layout for inventory. The Activity, Fragment or adapter uses these IDs to bind state and user actions. -->
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <!-- Header -->
+    <!-- inventoryHeader is referenced by the screen code when it renders or handles user input. -->
+    <LinearLayout
+        android:id="@+id/inventoryHeader"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/dmi_accent"
+        android:fitsSystemWindows="true"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="8dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:text="Medication Inventory"
+                android:textColor="#FFFFFF"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/inventoryCountText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="2dp"
+                android:text="0 medicines"
+                android:textColor="@color/dmi_accent_light"
+                android:textSize="15sp" />
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/inventoryAlertsButton"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Alerts"
+            app:tint="@android:color/white" />
+
+        <TextView
+            android:id="@+id/inventoryProfileInitials"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="6dp"
+            android:layout_marginEnd="12dp"
+            android:background="@drawable/bg_profile_circle"
+            android:gravity="center"
+            android:text="--"
+            android:textColor="#25364D"
+            android:textStyle="bold" />
+    </LinearLayout>
+    <!-- Search -->
+    <!-- inventorySearchLayout lets the user narrow what is shown without changing the underlying medicine records. -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/inventorySearchLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="14dp"
+        android:layout_marginEnd="16dp"
+        android:hint="Search name, code, generic or category"
+        app:boxStrokeColor="@color/dmi_input_stroke"
+        app:hintTextColor="@color/dmi_input_hint"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/inventoryHeader"
+        app:startIconDrawable="@android:drawable/ic_menu_search">
+
+        <!-- inventorySearchInput lets the user narrow what is shown without changing the underlying medicine records. -->
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/inventorySearchInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:singleLine="true" />
+    </com.google.android.material.textfield.TextInputLayout>
+    <!-- Compact filter controls, leaving the list the majority of the screen -->
+    <!-- inventoryFilterGroup lets the user narrow what is shown without changing the underlying medicine records. -->
+    <LinearLayout
+        android:id="@+id/inventoryFilterGroup"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/inventorySearchLayout">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/inventoryFilterButton"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minHeight="40dp"
+            android:text="Filter &amp; Sort"
+            android:textAllCaps="false"
+            android:textColor="@color/dmi_outlined_text"
+            app:icon="@android:drawable/ic_menu_sort_by_size"
+            app:strokeColor="@color/dmi_outlined_stroke" />
+
+        <TextView
+            android:id="@+id/inventoryFilterSummary"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:text="All active medicines"
+            android:textColor="#738096"
+            android:textSize="11sp" />
+
+        <TextView
+            android:id="@+id/inventoryClearFilters"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:gravity="center"
+            android:paddingStart="6dp"
+            android:text="Clear"
+            android:textColor="@color/dmi_accent_dark"
+            android:textStyle="bold"
+            android:visibility="gone" />
+    </LinearLayout>
+    <!-- Inventory content -->
+    <FrameLayout
+        android:id="@+id/inventoryContent"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavigation"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/inventoryFilterGroup">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/medicineRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingTop="6dp"
+            android:paddingBottom="90dp"
+            android:visibility="gone" />
+
+        <ProgressBar
+            android:id="@+id/inventoryLoadingProgress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:contentDescription="Loading inventory"
+            android:indeterminateTint="@color/dmi_accent"
+            android:progressTint="@color/dmi_accent"
+            android:visibility="visible" />
+        <!-- Empty state -->
+        <LinearLayout
+            android:id="@+id/emptyInventoryState"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="32dp"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/emptyInventoryTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="No medicines yet"
+                android:textColor="@color/dmi_accent_dark"
+                android:textSize="19sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/emptyInventoryMessage"
+                android:layout_width="280dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="center"
+                android:text="Medicines added to the inventory will appear here."
+                android:textColor="#738096"
+                android:textSize="14sp" />
+        </LinearLayout>
+        <!-- Add Medicine -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/addMedicineButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="20dp"
+            android:text="Add Medicine"
+            android:textColor="@color/dmi_primary_button_text"
+            android:visibility="gone"
+            app:backgroundTint="@color/dmi_primary_button_background"
+            app:cornerRadius="24dp"
+            app:icon="@android:drawable/ic_input_add"
+            app:iconGravity="textStart" />
+    </FrameLayout>
+    <!-- Bottom navigation -->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigation"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        app:itemIconTint="@color/dmi_bottom_nav_tint"
+        app:itemTextColor="@color/dmi_bottom_nav_tint"
+        app:labelVisibilityMode="labeled"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:menu="@menu/dashboard_bottom_navigation" />
+</androidx.constraintlayout.widget.ConstraintLayout>

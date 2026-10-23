@@ -1,0 +1,61 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "rewrites": [
+    {
+      "source": "/api/admin/users/:uid/permissions",
+      "destination": "/api/admin-router?__mediflowRoute=users-permissions&uid=:uid"
+    },
+    {
+      "source": "/api/admin/users/:uid/totp-recovery",
+      "destination": "/api/admin-router?__mediflowRoute=users-totp-recovery&uid=:uid"
+    },
+    {
+      "source": "/api/admin/users/:uid/role",
+      "destination": "/api/admin-router?__mediflowRoute=users-role&uid=:uid"
+    },
+    {
+      "source": "/api/admin/medicines/:medicineId/classification",
+      "destination": "/api/admin-router?__mediflowRoute=medicines-classification&medicineId=:medicineId"
+    },
+    {
+      "source": "/api/admin/medicines/:medicineId/deactivate",
+      "destination": "/api/admin-router?__mediflowRoute=medicines-deactivate&medicineId=:medicineId"
+    },
+    {
+      "source": "/api/admin/medicines/:medicineId/barcodes",
+      "destination": "/api/admin-router?__mediflowRoute=medicines-barcodes&medicineId=:medicineId"
+    },
+    {
+      "source": "/api/admin/users/create",
+      "destination": "/api/admin-router?__mediflowRoute=users-create"
+    },
+    {
+      "source": "/api/admin/settings/inventory",
+      "destination": "/api/admin-router?__mediflowRoute=settings-inventory"
+    },
+    {
+      "source": "/api/admin/medicines/:medicineId",
+      "destination": "/api/admin-router?__mediflowRoute=medicines-update&medicineId=:medicineId"
+    },
+    {
+      "source": "/api/admin/users/:uid",
+      "destination": "/api/admin-router?__mediflowRoute=users-detail&uid=:uid"
+    },
+    {
+      "source": "/api/admin/permissions",
+      "destination": "/api/admin-router?__mediflowRoute=permissions"
+    },
+    {
+      "source": "/api/admin/roles",
+      "destination": "/api/admin-router?__mediflowRoute=roles"
+    },
+    {
+      "source": "/api/admin/medicines",
+      "destination": "/api/admin-router?__mediflowRoute=medicines-create"
+    },
+    {
+      "source": "/api/admin/users",
+      "destination": "/api/admin-router?__mediflowRoute=users"
+    }
+  ]
+}
