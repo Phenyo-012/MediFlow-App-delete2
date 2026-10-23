@@ -12,7 +12,7 @@ import java.util.List;
 
 
 /**
- * Declares Room queries and updates for Audit records used by local repositories.
+ * Maintains the bounded local cache of server audit records and exposes recent, detail, and filtered views to the audit UI. This DAO does not create authoritative audit events; trusted backend services write those events.
  */
 @Dao
 public interface AuditDao

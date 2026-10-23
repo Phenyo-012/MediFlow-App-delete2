@@ -146,8 +146,12 @@ function requireBearerToken(
 
 
 /**
- * Contains the require body step, keeping that decision separate from the HTTP
- * handler or test setup.
+ * Accepts a parsed object or parses a JSON-string body, rejecting missing or
+ * non-object payloads before settings validation and trusted mutation.
+ *
+ * @param {Object} request incoming settings request
+ * @return {Object} parsed settings payload
+ * @throws {ApplicationHttpError} when the request body is missing or malformed
  */
 function requireBody(
     request,
@@ -207,8 +211,13 @@ function requireBody(
 
 
 /**
- * Contains the handle error step, keeping that decision separate from the HTTP
- * handler or test setup.
+ * Maps authentication and settings validation failures to their public HTTP
+ * status and error code. Unexpected errors are logged and returned as a generic
+ * server failure so internal details are not exposed to the caller.
+ *
+ * @param {Error} error failure raised while processing the settings update
+ * @param {Object} response Vercel response object
+ * @return {*} JSON error response
  */
 function handleError(
     error,

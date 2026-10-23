@@ -3,7 +3,10 @@ package com.medicationinventory.model.domain;
 
 
 /**
- * Represents Reorder Recommendation List Item data used by inventory rules and application workflows.
+ * Display-ready reorder row combining medicine identity with usable stock,
+ * near-expiry stock, configured thresholds, and the recommendation quantity.
+ * The report can render these values without repeating medicine lookups for
+ * each row.
  */
 public class ReorderRecommendationListItem
 {

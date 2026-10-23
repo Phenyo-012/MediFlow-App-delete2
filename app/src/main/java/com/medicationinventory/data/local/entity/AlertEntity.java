@@ -15,6 +15,12 @@ import com.medicationinventory.model.enums.AlertStatus;
 import com.medicationinventory.model.enums.AlertType;
 
 
+/**
+ * Locally derived inventory alert associated with a medicine and, when relevant, a specific batch.
+ * Alert type, severity, status, message, and lifecycle timestamps support the alerts screen,
+ * acknowledgement and resolution flows, reports, and notification dispatch. These rows are
+ * recomputed from local stock/settings and are not the trusted stock ledger.
+ */
 @Entity(
         tableName = "alerts",
 
@@ -36,9 +42,6 @@ import com.medicationinventory.model.enums.AlertType;
                 )
         },
 
-/**
- * Persists the local Alert record used by offline inventory workflows.
- */
         indices = {
                 @Index(value = "status"),
                 @Index(value = "alertType"),

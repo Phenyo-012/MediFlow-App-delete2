@@ -1,4 +1,12 @@
 
+/**
+ * Trusted service for creating, version-checking, editing, and deactivating shared medicine master
+ * records. Every mutation checks the current application permission, validates a strict field
+ * allowlist, and runs its collision/version checks with the medicine and code-claim writes in a
+ * Firestore transaction. Audit records are written in that same transaction. Medicine codes are
+ * normalized to uppercase and cannot collide with another medicine or an existing barcode mapping;
+ * update requests carry the version observed by the client so concurrent edits fail with a conflict.
+ */
 "use strict";
 
 const {createHash} = require("node:crypto");
@@ -59,6 +67,16 @@ function requireStockLevel(value, field) {
 }
 
 
+/**
+ * Validates the writable medicine fields and rejects unknown keys, including attempts to set
+ * server-managed identity, lifecycle, timestamps, or version data. Update requests may carry only
+ * the expected version; create requests must provide the medicine ID separately.
+ *
+ * @param {object} body request payload
+ * @param {boolean} editing whether this is an update rather than creation
+ * @return {object} normalized medicine master fields
+ * @throws {ApplicationHttpError} when a field is unsupported or invalid
+ */
 function validatePayload(body, editing) {
   if (body === null || typeof body !== "object" || Array.isArray(body)) {
     fail(400, "INVALID_REQUEST_BODY", "A JSON object is required.");
@@ -120,6 +138,14 @@ function matchesAll(previous, requested) {
 }
 
 
+/**
+ * Creates the trusted master-data operations with injectable permission, audit, and timestamp
+ * providers. Production defaults use Firebase Admin services; injected dependencies support
+ * isolated tests without weakening the checks performed by the returned operations.
+ *
+ * @param {object} overrides optional trusted service providers
+ * @return {{createMedicine: Function, updateMedicine: Function, deactivateMedicine: Function}}
+ */
 function createMedicineMasterAdminService(overrides = {}) {
   const authorize = overrides.requireApplicationPermission ||
       requireApplicationPermission;
@@ -128,6 +154,12 @@ function createMedicineMasterAdminService(overrides = {}) {
       (() => FieldValue.serverTimestamp());
 
 
+  /**
+   * Applies create or update after permission and payload validation. The transaction checks the
+   * existing sync version, medicine code claims, barcode collisions, and legacy exact-code records
+   * before writing; matching writes and the audit event commit atomically. A no-op update returns
+   * the existing version unless a missing code claim must be repaired.
+   */
   async function mutate(uid, medicineId, body, editing) {
     const context = await authorize(
         uid, editing ? "UPDATE_MEDICINE" : "CREATE_MEDICINE");
@@ -241,6 +273,11 @@ function createMedicineMasterAdminService(overrides = {}) {
   }
 
 
+  /**
+   * Marks an active medicine inactive only when the caller's expected sync version still matches.
+   * Deactivation is idempotent for an already inactive record, but a stale version or malformed
+   * lifecycle state is rejected; the status change and audit event share one Firestore transaction.
+   */
   async function deactivate(uid, medicineId, body) {
     const context = await authorize(uid, "DEACTIVATE_MEDICINE");
     const id = requireMedicineId(medicineId);

@@ -37,6 +37,14 @@ const VALID_VED =
   ]);
 
 
+/**
+ * Creates an ABC/VED mutation service with injectable authorization, audit, and timestamp
+ * dependencies. Production callers use server authorization and Firestore audit writing; the
+ * injected providers let tests verify those boundaries and transaction ordering.
+ *
+ * @param {object} overrides optional trusted dependency providers
+ * @return {{setClassification: Function}} classification mutation API
+ */
 function createMedicineClassificationAdminService(
     overrides = {},
 ) {
@@ -57,7 +65,16 @@ function createMedicineClassificationAdminService(
 
 
   /**
-   * Rejects invalid ABC/VED codes, checks classification-management permission, and atomically writes the classification and audit record.
+   * Updates one active medicine's ABC/VED pair after requiring MANAGE_ABC_VED and validating both
+   * codes. A Firestore transaction reads the medicine and any existing classification before
+   * writing; unchanged pairs return without an audit write, while changes and their audit record
+   * commit together.
+   *
+   * @param {string} authenticatedUid verified actor UID
+   * @param {string} medicineId target shared medicine ID
+   * @param {string} abcClassification requested A, B, or C class
+   * @param {string} vedClassification requested V, E, or D class
+   * @return {Promise<object>} whether the pair changed and its resulting record metadata
    */
   async function setClassification(
       authenticatedUid,

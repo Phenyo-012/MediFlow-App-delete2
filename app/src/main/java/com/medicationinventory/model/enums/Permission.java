@@ -3,7 +3,8 @@ package com.medicationinventory.model.enums;
 
 
 /**
- * Defines supported Permission values shared by inventory and authorization workflows.
+ * Permission identifiers shared by profile mapping, presentation gates, and trusted admin APIs. These
+ * values describe individual capabilities; the server remains authoritative when a request changes shared data.
  */
 public enum Permission
 {

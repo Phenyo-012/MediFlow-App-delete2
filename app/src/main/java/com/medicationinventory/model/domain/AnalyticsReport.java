@@ -9,7 +9,11 @@ import java.util.List;
 
 
 /**
- * Represents Analytics Report data used by inventory rules and application workflows.
+ * Immutable snapshot consumed by the analytics report UI. It groups summary
+ * totals with category, stock, expiry, alert, and movement distributions, plus
+ * movement trends and top-issued medicines for the selected report window.
+ * Lists are copied on construction so later changes to a query result cannot
+ * mutate a report already being observed by the UI.
  */
 public final class AnalyticsReport
 {

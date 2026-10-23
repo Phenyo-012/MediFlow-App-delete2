@@ -35,7 +35,11 @@ import java.util.List;
 
 
 /**
- * Implements the Adjustment Activity behavior for its Android screen and the application state it presents.
+ * Presents a medicine's local batches and collects an explicit increase/decrease adjustment with a
+ * quantity and reason. The selected batch and current business date are displayed for context, but
+ * {@link AdjustmentService} revalidates the request, current profile permission, and stock before
+ * the local Room transaction is recorded and queued for trusted processing. A screen-level
+ * submission guard prevents duplicate taps while the asynchronous service callback is pending.
  */
 public class AdjustmentActivity
         extends AppCompatActivity
@@ -89,10 +93,8 @@ public class AdjustmentActivity
     private boolean submitting = false;
 
 
+    /** Binds the adjustment form to the selected medicine, local batches, and asynchronous service workflow. */
     @Override
-    /**
-     * Initializes the screen, wires up user actions and starts observing the state needed for the first render.
-     */
     protected void onCreate(
             Bundle savedInstanceState)
     {
@@ -508,7 +510,9 @@ public class AdjustmentActivity
 
 
     /**
-     * Carries out adjustment and keeps its validation, state changes and completion handling together.
+     * Converts the selected direction, batch, quantity, and reason into a service request. The
+     * service owns validation and authorization; this activity locks the form during the callback
+     * and presents whether the operation was saved locally or failed.
      */
     private void submitAdjustment()
     {

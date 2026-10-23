@@ -27,7 +27,11 @@ import java.util.List;
 
 
 /**
- * Owns observable screen state and user actions for Inventory.
+ * Supplies the inventory screen with profile and medicine streams, current filter state, and the
+ * derived list displayed by the activity. The base list follows Room-backed repository updates;
+ * filtering and sorting are applied locally, while ABC/VED classifications are fetched only when
+ * the signed-in profile has the corresponding permission. Date-sensitive stock snapshots are
+ * refreshed when the calendar day changes so expiry and alert counts do not remain stale overnight.
  */
 public class InventoryViewModel extends ViewModel {
     private final LiveData<UserProfile> userProfile;
@@ -187,6 +191,11 @@ public class InventoryViewModel extends ViewModel {
     }
 
 
+    /**
+     * Refreshes restricted ABC/VED data only for a permitted profile and only after inventory has
+     * loaded. The in-progress guard prevents overlapping requests; results are associated with the
+     * captured inventory snapshot before filters are recomputed, and access loss clears the data.
+     */
     public void refreshClassifications() {
         if (!mayViewClassifications || classificationRefreshInProgress) return;
         List<InventoryMedicineItem> snapshot = stockSnapshot.getValue();

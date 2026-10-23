@@ -13,7 +13,10 @@ import com.medicationinventory.model.domain.InventorySettings;
 
 
 /**
- * Reads or writes Firestore Inventory Settings Data Source data in Firestore and translates asynchronous results for app callers.
+ * Reads the shared {@code settings/inventory} document and exposes mapped
+ * values and live document updates to repository callers. Direct server reads
+ * provide a fresh initial value, while the listener reports later document
+ * changes. This source does not decide who may change those values.
  */
 public class FirestoreInventorySettingsDataSource
 {
@@ -44,6 +47,13 @@ public class FirestoreInventorySettingsDataSource
     }
 
 
+    /**
+     * Fetches the shared inventory settings document directly from the server.
+     * A missing document is represented as a successful {@code null} result so
+     * the repository can apply its established first-run/default behavior.
+     *
+     * @param callback receives the mapped settings, {@code null} when absent, or an error
+     */
     public void getInventorySettings(
             SettingsCallback callback)
     {
@@ -186,6 +196,14 @@ public class FirestoreInventorySettingsDataSource
         );
     }
 
+    /**
+     * Observes changes to the single shared inventory settings document. Callers
+     * own the listener lifecycle and should remove the returned registration
+     * when their observation ends.
+     *
+     * @param callback receives each mapped settings snapshot or listener error
+     * @return registration used to detach the Firestore listener
+     */
     public ListenerRegistration listenToInventorySettings(
             SettingsCallback callback)
     {

@@ -2,7 +2,10 @@ package com.medicationinventory.model.domain;
 
 
 /**
- * Represents Inventory Medicine Item data used by inventory rules and application workflows.
+ * Inventory-list projection pairing a medicine master record with aggregate
+ * usable, expired, and expiry-window quantities. It also carries the nearest
+ * usable expiry for sorting; stock status is derived from usable units and the
+ * medicine's reorder level rather than from total physical quantity.
  */
 public final class InventoryMedicineItem {
     private final Medicine medicine;

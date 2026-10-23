@@ -17,14 +17,17 @@ public class FirebaseAuthDataSource
 {
     private final FirebaseAuth firebaseAuth;
 
+    /** Creates a data source backed by the process-wide Firebase Authentication instance. */
     public FirebaseAuthDataSource()
     {
         this.firebaseAuth = FirebaseAuth.getInstance();
     }
+    /** @return whether Firebase currently holds an authenticated user session */
     public boolean isSignedIn()
     {
         return firebaseAuth.getCurrentUser() != null;
     }
+    /** @return the current Firebase UID, or {@code null} when signed out */
     public String getCurrentUserId()
     {
         FirebaseUser user = firebaseAuth.getCurrentUser();
@@ -34,6 +37,7 @@ public class FirebaseAuthDataSource
         }
         return user.getUid();
     }
+    /** @return the current Firebase email address, or {@code null} when signed out */
     public String getCurrentUserEmail()
     {
         FirebaseUser user = firebaseAuth.getCurrentUser();
@@ -44,6 +48,14 @@ public class FirebaseAuthDataSource
         return user.getEmail();
     }
 
+    /**
+     * Starts Firebase email/password authentication. Firebase may return an MFA resolver instead of a UID
+     * when the account has an enrolled second factor; application profile and permission checks happen
+     * later in {@link com.medicationinventory.data.repository.AuthenticationRepository}.
+     * @param email Firebase account email
+     * @param password Firebase account password
+     * @param callback receives the UID, MFA challenge, or authentication error
+     */
     public void signIn(
             String email,
             String password,
@@ -143,6 +155,7 @@ public class FirebaseAuthDataSource
                 });
     }
 
+    /** Clears the Firebase Authentication session on this device. */
     public void signOut()
     {
         firebaseAuth.signOut();

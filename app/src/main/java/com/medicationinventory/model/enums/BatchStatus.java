@@ -2,7 +2,7 @@ package com.medicationinventory.model.enums;
 
 
 /**
- * Defines supported Batch Status values shared by inventory and authorization workflows.
+ * Availability state assigned to a batch as stock is depleted or its expiry date passes.
  */
 public enum BatchStatus
 {

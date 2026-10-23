@@ -9,7 +9,10 @@ import java.util.List;
 
 
 /**
- * Represents Medicine Category Catalog data used by inventory rules and application workflows.
+ * Source of the predefined medicine categories offered by the medicine form.
+ * The catalog is deliberately separate from category-option assembly, which can
+ * add locally known, server-provided, and current-record categories around this
+ * fixed list.
  */
 public final class MedicineCategoryCatalog
 {

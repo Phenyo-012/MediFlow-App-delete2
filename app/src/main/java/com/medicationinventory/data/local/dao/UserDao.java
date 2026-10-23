@@ -9,7 +9,7 @@ import com.medicationinventory.data.local.entity.UserProfileEntity;
 
 
 /**
- * Declares Room queries and updates for User records used by local repositories.
+ * Caches server-loaded user profiles for authentication, authorization UI, and live account-state observation. Profile deletion is scoped by UID so signing out one account does not clear another account row.
  */
 @Dao
 public interface UserDao {

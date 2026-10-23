@@ -12,6 +12,13 @@ import com.medicationinventory.model.enums.InventoryOperationStatus;
 import com.medicationinventory.model.enums.InventoryOperationType;
 
 
+/**
+ * Room representation of a user's inventory-operation envelope. It records the requested type and
+ * quantity, medicine, initiating UID and device, client timestamp, current local/cloud status, and
+ * operation-specific receipt, correction, or FEFO-override metadata. The operation is the parent
+ * identity for allocations, provisional movement rows, and its sync queue entry; its status and
+ * result fields let synchronization distinguish pending work from terminal server outcomes.
+ */
 @Entity(tableName = "inventory_operations",
 
         foreignKeys =
@@ -24,9 +31,6 @@ import com.medicationinventory.model.enums.InventoryOperationType;
                                 onDelete = ForeignKey.NO_ACTION
                         )},
 
-/**
- * Persists the local Inventory Operation record used by offline inventory workflows.
- */
         indices =
                 {
                         @Index(value = "medicineId"),

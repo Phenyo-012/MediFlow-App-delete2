@@ -18,7 +18,10 @@ import java.nio.charset.StandardCharsets;
 
 
 /**
- * Calls the trusted backend for Trusted Medicine Barcode Data Source operations and translates HTTP outcomes for app callers.
+ * Links or unlinks a barcode on the shared medicine master through the trusted
+ * backend. Requests are bound to the current Firebase user and use the admin
+ * barcode endpoints; server authorization and duplicate-code policy remain
+ * authoritative, while callbacks report the remote mutation outcome.
  */
 public final class TrustedMedicineBarcodeDataSource {
     private final FirebaseAuth auth;

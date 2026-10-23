@@ -10,7 +10,7 @@ import com.medicationinventory.data.local.entity.MedicineBarcodeEntity;
 import java.util.List;
 
 /**
- * Declares Room queries and updates for Medicine Barcode records used by local repositories.
+ * Provides local barcode-to-medicine lookup and observation used by scanning and medicine administration. Shared mappings are validated by the repository and trusted backend before becoming authoritative.
  */
 @Dao
 public interface MedicineBarcodeDao {

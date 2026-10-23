@@ -3,7 +3,7 @@ package com.medicationinventory.model.enums;
 
 
 /**
- * Defines supported Stock Level Status values shared by inventory and authorization workflows.
+ * Report classification of usable stock relative to its reorder threshold, including zero-stock state.
  */
 public enum StockLevelStatus
 {

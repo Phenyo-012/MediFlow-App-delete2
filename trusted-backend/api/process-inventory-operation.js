@@ -1,8 +1,10 @@
 /**
- * Vercel entry point for processing a stock operation submitted by a device.
- *
- * The actual validation and transaction logic lives in the inventory processor
- * rather than in this HTTP wrapper.
+ * Vercel POST endpoint for processing a locally queued inventory operation. It requires a
+ * revocation-checked Firebase ID token, validates the operation UUID, and passes only the verified
+ * UID to the trusted Firestore processor. Known processor failures retain their safe status and
+ * error code; unexpected failures are logged by category without credentials and returned as a
+ * generic temporary-unavailability response. Stock validation and atomic writes live in the
+ * processor so the HTTP boundary cannot bypass those rules.
  */
 const {
   getAdminAuth,
@@ -14,6 +16,14 @@ const {
 } = require("../lib/inventoryProcessor");
 
 
+/**
+ * Validates the HTTP envelope and delegates a request only after token verification. The route
+ * returns 405 for other methods, 401 for missing or invalid credentials, 400 for malformed input,
+ * and processor-specific statuses for business conflicts or authorization failures.
+ *
+ * @param {import('http').IncomingMessage} request Vercel request
+ * @param {import('http').ServerResponse} response Vercel response
+ */
 module.exports = async function handler(
     request,
     response,
@@ -156,10 +166,7 @@ module.exports = async function handler(
 };
 
 
-/**
- * Applies bearer token on the server. Signing in does not automatically grant this
- * permission.
- */
+/** Extracts the credential from an HTTP Bearer authorization header; token validity is checked by Firebase Admin. */
 function bearerToken(
     authorizationHeader,
 ) {
@@ -182,8 +189,12 @@ function bearerToken(
 
 
 /**
- * Checks body before the value reaches trusted storage. Invalid or ambiguous input
- * should fail here.
+ * Accepts Vercel's already-parsed object body or decodes a JSON string body. Unsupported body
+ * forms become an empty object; malformed JSON throws so the handler can return its 400 response.
+ *
+ * @param {*} body raw or parsed request body
+ * @return {object} parsed object, or an empty object for unsupported input
+ * @throws {SyntaxError} when a string body is not valid JSON
  */
 function parseBody(
     body,
@@ -205,10 +216,7 @@ function parseBody(
 }
 
 
-/**
- * Contains the is valid uuid step, keeping that decision separate from the HTTP
- * handler or test setup.
- */
+/** Accepts canonical UUIDs with RFC variant and versions 1 through 5 for operation document IDs. */
 function isValidUuid(
     value,
 ) {

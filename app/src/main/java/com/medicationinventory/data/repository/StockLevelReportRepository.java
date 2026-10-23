@@ -30,7 +30,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 
 /**
- * Combines medicine and batch records with inventory settings to produce stock level report rows.
+ * Combines local medicine and batch snapshots with inventory settings, then publishes report rows through LiveData. DAO snapshots feed the calculation service; source or setting changes recompute rows without mutating inventory.
  */
 public class StockLevelReportRepository
 {

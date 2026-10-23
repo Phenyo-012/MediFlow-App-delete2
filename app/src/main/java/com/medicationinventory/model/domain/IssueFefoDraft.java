@@ -9,7 +9,11 @@ import java.util.List;
 
 
 /**
- * Represents Issue Fefo Draft data used by inventory rules and application workflows.
+ * Serializable snapshot passed from FEFO review to stock issue submission. It
+ * preserves the user's requested quantity, reason, candidate batches, and
+ * proposed allocations so the activity can review the selection before the
+ * service revalidates it against current stock. Carrying the proposal does not
+ * reserve batches or make the issue authoritative.
  */
 public class IssueFefoDraft
         implements Serializable

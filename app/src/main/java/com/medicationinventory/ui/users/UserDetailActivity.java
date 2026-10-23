@@ -47,7 +47,7 @@ import java.util.Locale;
 
 
 /**
- * Implements the User Detail Activity behavior for its Android screen and the application state it presents.
+ * Presents one employee profile and its administrative actions: active state, role, explicit permissions, and optional TOTP recovery. The Activity gathers confirmation and a recovery reason/request ID, while UserDetailViewModel and the trusted backend perform the mutation; UI visibility is not an authorization boundary.
  */
 public class UserDetailActivity
         extends AppCompatActivity

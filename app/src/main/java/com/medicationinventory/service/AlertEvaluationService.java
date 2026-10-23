@@ -18,7 +18,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Applies Alert Evaluation Service business rules used by inventory operations and reports.
+ * Evaluates low-stock, near-expiry, and expired-stock conditions for a medicine using the shared usable-stock and reorder calculations. Low stock is high severity when no usable stock remains and medium otherwise; expiry checks use the Africa/Johannesburg business date.
  */
 public class AlertEvaluationService
 {
@@ -48,6 +48,14 @@ public class AlertEvaluationService
                 reorderRecommendationService;
     }
 
+    /**
+     * Builds current alert conditions from one medicine and its batch snapshot. Null batches are treated as empty.
+     * @param medicine medicine being evaluated
+     * @param batches current batches
+     * @param nearExpiryWarningDays inclusive expiry warning window; must be non-negative
+     * @return conditions to reconcile with stored alert rows
+     * @throws IllegalArgumentException when medicine is null or warning days are negative
+     */
     public List<AlertCondition> evaluateAlerts(
             Medicine medicine,
             List<Batch> batches,

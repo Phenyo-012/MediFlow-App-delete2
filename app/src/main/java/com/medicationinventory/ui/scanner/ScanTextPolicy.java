@@ -2,7 +2,10 @@ package com.medicationinventory.ui.scanner;
 
 
 /**
- * Contains Scan Text Policy behavior used by the Android interface.
+ * Normalizes scanner or manually entered text into a value safe for a single
+ * inventory search field. It trims surrounding whitespace and rejects empty,
+ * overlong, multiline, or NUL-containing payloads while preserving identifiers
+ * such as leading-zero barcodes and their case.
  */
 public final class ScanTextPolicy {
     private static final int MAX_LENGTH = 256;

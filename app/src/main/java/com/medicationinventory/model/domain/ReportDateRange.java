@@ -3,7 +3,9 @@ package com.medicationinventory.model.domain;
 
 
 /**
- * Represents Report Date Range data used by inventory rules and application workflows.
+ * Validated half-open time window for report queries. The start is included and
+ * the end is excluded, which lets adjacent date ranges meet without counting a
+ * boundary transaction twice. Both values are epoch milliseconds.
  */
 public class ReportDateRange
 {

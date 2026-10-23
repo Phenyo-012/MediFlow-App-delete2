@@ -7,6 +7,12 @@ import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
 
+/**
+ * Room ledger row for a quantity movement tied to one operation, medicine, and batch. The signed
+ * quantity change and transaction type describe the stock effect; client and server timestamps
+ * preserve both local creation and authoritative processing time. The provisional flag distinguishes
+ * an optimistic local movement from a confirmed transaction imported from the trusted backend.
+ */
 @Entity(tableName = "inventory_transactions",
 
         foreignKeys = {
@@ -35,9 +41,6 @@ import androidx.room.PrimaryKey;
                 )
         },
 
-/**
- * Persists the local Inventory Transaction record used by offline inventory workflows.
- */
         indices = {
                 @Index(value = "operationId"),
                 @Index(value = "medicineId"),

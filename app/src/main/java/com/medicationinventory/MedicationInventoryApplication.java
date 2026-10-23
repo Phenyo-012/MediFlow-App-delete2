@@ -18,7 +18,7 @@ import com.medicationinventory.model.domain.UserProfile;
 
 
 /**
- * Provides Medication Inventory Application behavior used by the MediFlow application.
+ * Owns process-wide startup and lifecycle wiring. Startup constructs the application dependency graph, registers inactivity enforcement, creates notification channels and observers, schedules pending synchronization, and attaches sign-in and connectivity listeners. Connectivity restoration triggers server profile revalidation only for a locally unlocked session, while Firebase authentication changes schedule notification and sync work.
  */
 public class MedicationInventoryApplication extends Application
 {
@@ -28,6 +28,10 @@ public class MedicationInventoryApplication extends Application
     private ConnectivityManager.NetworkCallback onlineRevalidationCallback;
     @Override
 
+    /**
+     * Initializes shared services and registers app-wide lifecycle, authentication, notification, and connectivity handling.
+     * The network callback refreshes authorization state before the application continues using an unlocked offline session.
+     */
     public void onCreate()
     {
         super.onCreate();

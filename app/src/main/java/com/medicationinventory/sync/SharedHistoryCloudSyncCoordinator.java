@@ -34,7 +34,7 @@ import java.util.Set;
 
 
 /**
- * Coordinates Shared History Cloud Sync Coordinator work between the local database and shared cloud state.
+ * Reads confirmed operation and transaction collections from Firestore for the active Firebase UID, maps only valid server records, and imports them together with Room transaction protection. It waits until both snapshots are available and required medicine/batch parents exist; existing local operations are accepted only when their confirmed identity matches, preserving pending or conflicting local state.
  */
 public final class SharedHistoryCloudSyncCoordinator {
     private static final String TAG = "SharedHistorySync";
@@ -132,6 +132,12 @@ public final class SharedHistoryCloudSyncCoordinator {
         }
     }
 
+    /**
+     * Accepts only a server-confirmed operation snapshot for the still-active UID, maps each
+     * document through the schema validator, and stores the mapped set for a later ledger import.
+     * Cache snapshots are ignored so unconfirmed local Firestore writes cannot be mirrored into
+     * Room as shared history.
+     */
     private void onOperations(String uid, QuerySnapshot snapshot, Exception error) {
         if (!active(uid)) return;
         if (error != null) {
@@ -158,6 +164,11 @@ public final class SharedHistoryCloudSyncCoordinator {
         scheduleImport();
     }
 
+    /**
+     * Maps confirmed transaction documents and holds the resulting set until the operation
+     * snapshot is also available. Keeping both collections together lets import verify each
+     * transaction against its confirmed parent operation and batch before writing the ledger.
+     */
     private void onTransactions(String uid, QuerySnapshot snapshot, Exception error) {
         if (!active(uid)) return;
         if (error != null) {
@@ -183,6 +194,11 @@ public final class SharedHistoryCloudSyncCoordinator {
         scheduleImport();
     }
 
+    /**
+     * Takes defensive copies only after both server snapshots are ready, then moves import work to
+     * the database executor. This avoids mutating listener-owned lists while a subsequent snapshot
+     * arrives and keeps Firestore callbacks free of Room transaction work.
+     */
     private void scheduleImport() {
         final String uid;
         final List<FirestoreHistoryDocumentMapper.ConfirmedOperation> ops;
@@ -196,6 +212,12 @@ public final class SharedHistoryCloudSyncCoordinator {
         executors.databaseIO().execute(() -> importLedger(uid, ops, txs));
     }
 
+    /**
+     * Imports confirmed history in one Room transaction without applying stock quantities again.
+     * It verifies the UID throughout the transaction, requires medicine and batch parents, and
+     * skips pending local operations or provisional movements that would conflict with a cloud
+     * record. An account switch throws a sentinel so all writes from that import roll back.
+     */
     private void importLedger(String uid,
                               List<FirestoreHistoryDocumentMapper.ConfirmedOperation> ops,
                               List<InventoryTransactionEntity> txs) {

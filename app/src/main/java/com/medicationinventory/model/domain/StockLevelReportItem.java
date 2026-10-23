@@ -5,7 +5,10 @@ import com.medicationinventory.model.enums.StockLevelStatus;
 
 
 /**
- * Represents Stock Level Report Item data used by inventory rules and application workflows.
+ * Row in the stock-level report, combining a medicine's usable quantity and
+ * stock status with its reorder/target thresholds and near-expiry quantity. Batch
+ * counts show how that stock is distributed across all batches versus batches
+ * that currently contain quantity.
  */
 public class StockLevelReportItem
 {

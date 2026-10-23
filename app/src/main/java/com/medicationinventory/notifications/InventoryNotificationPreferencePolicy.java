@@ -2,13 +2,16 @@ package com.medicationinventory.notifications;
 
 
 /**
- * Handles Inventory Notification Preference Policy behavior for inventory-related Android notifications.
+ * Applies the master switch and per-alert-type selections used by the notification worker. Unknown
+ * alert types are disabled by default, so newly introduced types cannot notify until explicitly
+ * supported by the preference flow.
  */
 public final class InventoryNotificationPreferencePolicy {
 
     private InventoryNotificationPreferencePolicy() { }
 
 
+    /** Returns whether the master switch and the selected type's preference both allow delivery. */
     public static boolean allows(boolean masterEnabled,
                                  boolean lowStockEnabled,
                                  boolean nearExpiryEnabled,

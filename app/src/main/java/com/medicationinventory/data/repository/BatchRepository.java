@@ -14,7 +14,7 @@ import java.util.List;
 
 
 /**
- * Reads and writes batches through the local Room DAO and maps entities to domain objects.
+ * Maps local Room batch entities to domain values and provides the batch lookups used by receipt, issue, and inventory screens. Cloud replication is handled by the batch sync coordinator rather than this repository.
  */
 public class BatchRepository
 {

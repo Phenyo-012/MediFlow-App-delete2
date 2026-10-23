@@ -3,7 +3,7 @@ package com.medicationinventory.model.enums;
 
 
 /**
- * Defines supported Alert Type values shared by inventory and authorization workflows.
+ * Inventory conditions that can produce persisted alerts: low stock, near-expiry stock, and expired stock.
  */
 public enum AlertType
 {

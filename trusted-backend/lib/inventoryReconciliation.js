@@ -240,6 +240,15 @@ async function getInventoryReconciliation(
 }
 
 
+/**
+ * Projects a Firestore batch document into the stable reconciliation response shape. Missing
+ * optional identifiers become null, numeric stock fields default to zero, and timestamp
+ * variants are converted to epoch milliseconds for the Android client.
+ *
+ * @param {string} documentId Firestore document ID used as an identity fallback
+ * @param {object} batch stored batch fields
+ * @return {object} normalized batch snapshot
+ */
 function normalizeBatch(
   documentId,
   batch,
@@ -295,6 +304,15 @@ function normalizeBatch(
 
 
 
+/**
+ * Normalizes one authoritative stock transaction for local reconciliation. The helper accepts
+ * legacy field naming for transaction type and uses the document ID when an explicit ID is absent,
+ * allowing older and newer records to share the same response contract.
+ *
+ * @param {string} documentId Firestore document ID
+ * @param {object} transaction stored transaction fields
+ * @return {object} normalized transaction snapshot
+ */
 function normalizeTransaction(
   documentId,
   transaction,
@@ -402,6 +420,13 @@ function integerOrZero(
 }
 
 
+/**
+ * Converts Firestore Timestamp, Date, or numeric time representations to epoch milliseconds.
+ * Unknown values return zero because reconciliation responses use a numeric field consistently.
+ *
+ * @param {*} value stored timestamp representation
+ * @return {number} epoch milliseconds, or zero when no supported time is present
+ */
 function toMillis(
   value,
 ) {

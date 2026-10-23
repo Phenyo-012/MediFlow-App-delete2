@@ -26,7 +26,7 @@ import java.util.Map;
 
 
 /**
- * Coordinates Medicine Barcode Cloud Sync Coordinator work between the local database and shared cloud state.
+ * Listens to barcode mapping snapshots for the current Firebase user and imports validated mappings into Room. Listener changes are bound to UID, and shared mapping documents are checked against their barcode/document identity before local insertion.
  */
 public final class MedicineBarcodeCloudSyncCoordinator {
     private static final String TAG = "BarcodeCloudSync";

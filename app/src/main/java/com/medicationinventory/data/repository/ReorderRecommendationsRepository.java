@@ -30,7 +30,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 
 /**
- * Combines medicine and batch records with inventory settings to produce reorder recommendations.
+ * Combines active medicines, their local batches, and the current near-expiry setting to publish reorder recommendation rows. Room data changes and settings refreshes trigger recomputation; the repository does not place orders or mutate stock.
  */
 public class ReorderRecommendationsRepository
 {

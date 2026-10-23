@@ -22,7 +22,7 @@ import java.util.UUID;
 
 
 /**
- * Applies Correction Service rules and calculations used by inventory operations or reports.
+ * Records a compensating inventory operation when a previously confirmed movement needs correction. The original history remains intact; the new movement references the related operation, is validated and authorized against current account and batch state, and follows the pending local commit and trusted-processing path.
  */
 public class CorrectionService
 {
@@ -76,6 +76,13 @@ public class CorrectionService
     /**
      * Records a compensating movement linked to the original operation instead of editing
      * its confirmed transaction history in place.
+     * @param medicineId medicine whose stock is corrected
+     * @param batchId batch affected by the correction
+     * @param relatedOperationId confirmed operation being corrected
+     * @param direction whether the compensating movement adds or removes stock
+     * @param quantityText user-entered quantity
+     * @param reason explanation retained for audit
+     * @param callback receives validation, authorization, save, or processing status
      */
     public void commitCorrection(
             String medicineId,

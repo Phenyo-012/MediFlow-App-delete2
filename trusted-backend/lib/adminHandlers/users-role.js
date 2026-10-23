@@ -141,8 +141,12 @@ function requireBearerToken(
 
 
 /**
- * Contains the require target user ID step, keeping that decision separate from
- * the HTTP handler or test setup.
+ * Extracts and trims the UID selected by the rewritten admin route so the role
+ * service receives one unambiguous target account.
+ *
+ * @param {Object} request incoming user-role request
+ * @return {string} target user's UID
+ * @throws {UserAdminHttpError} when the target UID is missing or invalid
  */
 function requireTargetUid(
     request,
@@ -167,8 +171,13 @@ function requireTargetUid(
 
 
 /**
- * Contains the require role ID step, keeping that decision separate from the HTTP
- * handler or test setup.
+ * Requires a non-blank role identifier and trims it before lookup. The route's
+ * role service still verifies that the selected role is one of the supported
+ * application roles.
+ *
+ * @param {Object} body parsed request payload
+ * @return {string} normalized role identifier
+ * @throws {UserAdminHttpError} when no role identifier is supplied
  */
 function requireRoleId(
     body,
@@ -191,8 +200,12 @@ function requireRoleId(
 
 
 /**
- * Contains the handle error step, keeping that decision separate from the HTTP
- * handler or test setup.
+ * Maps authentication and user-admin exceptions to their declared HTTP errors
+ * and hides unexpected error details behind the endpoint's generic response.
+ *
+ * @param {Error} error failure raised while changing a role
+ * @param {Object} response Vercel response object
+ * @return {*} JSON error response
  */
 function handleError(
     error,

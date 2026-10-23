@@ -15,7 +15,7 @@ import com.medicationinventory.util.AppExecutors;
 
 
 /**
- * Coordinates local and remote User data access for the rest of the application.
+ * Keeps the signed-in user profile available from Room while refreshing it from Firestore for authorization decisions. The profile listener persists server snapshots locally, distinguishes server-confirmed updates from cache emissions, and clears the cached profile when the server reports that it is missing.
  */
 public class UserRepository
 {
@@ -33,6 +33,11 @@ public class UserRepository
         this.appExecutors = appExecutors;
     }
 
+    /**
+     * Observes the cached profile for a UID and maps Room updates into the domain model.
+     * @param uid Firebase user identifier
+     * @return live profile data, which may be null until a profile has been cached
+     */
     public LiveData<UserProfile> observeUser(String uid)
     {
         LiveData<UserProfileEntity> entityLiveData =
@@ -41,6 +46,12 @@ public class UserRepository
                 entityLiveData,
                 UserProfileMapper::toDomain);
     }
+    /**
+     * Reads the current cached profile on the database executor and delivers it on the main thread.
+     * This does not contact Firestore or establish authorization from stale local data.
+     * @param uid Firebase user identifier
+     * @param callback receives the mapped profile, or null when no row is cached
+     */
     public void getUser(
             String uid,
             UserCallback callback)
@@ -55,6 +66,12 @@ public class UserRepository
     }
 
 
+    /**
+     * Fetches a profile from the remote source and upserts it locally before reporting success.
+     * Invalid UIDs fail through the callback; a remote failure leaves the caller without a refreshed profile.
+     * @param uid Firebase user identifier
+     * @param callback receives the server profile or the fetch error
+     */
     public void refreshUserProfile(String uid, RefreshCallback callback) {
         if (uid == null || uid.trim().isEmpty())
         {
@@ -85,6 +102,14 @@ public class UserRepository
     }
 
 
+    /**
+     * Attaches a Firestore profile listener and mirrors received profiles into Room.
+     * Only the explicit server-confirmed callback represents fresh authorization; cached snapshots are not new grants.
+     * A missing server profile is reported and then removed from the local cache.
+     * @param uid Firebase user identifier
+     * @param callback receives profile, missing-profile, confirmation, or listener/write errors
+     * @return registration that the owner must remove when profile observation ends
+     */
     public ListenerRegistration startUserProfileSync(
             String uid,
             ProfileSyncCallback callback)
@@ -243,6 +268,7 @@ public class UserRepository
         );
     }
 
+    /** Removes a non-empty UID profile from the local database after sign-out or revocation. */
     public void clearUser(String uid)
     {
         if (uid == null || uid.trim().isEmpty())

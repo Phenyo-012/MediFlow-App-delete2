@@ -16,7 +16,10 @@ import androidx.core.content.ContextCompat;
 
 
 /**
- * Handles Inventory Notification Permission behavior for inventory-related Android notifications.
+ * Centralizes the platform checks required before MediFlow posts an alert: Android 13 runtime
+ * permission, the app-wide notification setting, and (on Android 8+) the inventory-alert channel's
+ * importance. The settings helper first opens notification-specific settings and falls back to the
+ * app details page when that intent is unavailable.
  */
 public final class InventoryNotificationPermission {
 

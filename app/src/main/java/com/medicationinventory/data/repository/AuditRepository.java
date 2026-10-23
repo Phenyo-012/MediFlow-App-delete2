@@ -16,7 +16,7 @@ import java.util.List;
 
 
 /**
- * Coordinates local and remote Audit data access for the rest of the application.
+ * Loads the newest protected audit records from Firestore and stores them in a local Room cache for the audit screen. The screen observes the cache while refresh results update it asynchronously; network failures are returned to the caller without fabricating records.
  */
 public class AuditRepository
 {
@@ -91,6 +91,10 @@ public class AuditRepository
     }
 
 
+    /**
+     * Refreshes the default recent-record window from the remote audit source into Room.
+     * @param callback receives the completed refresh or its error
+     */
     public void refreshRecent(
             RefreshCallback callback)
     {
@@ -101,6 +105,11 @@ public class AuditRepository
     }
 
 
+    /**
+     * Refreshes a bounded number of remote audit records and updates their local cache.
+     * @param limit maximum records; non-positive values use the default
+     * @param callback receives the completed refresh or its error
+     */
     public void refreshRecent(
             int limit,
             RefreshCallback callback)

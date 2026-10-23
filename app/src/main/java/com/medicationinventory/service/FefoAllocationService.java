@@ -13,7 +13,7 @@ import java.util.List;
 
 
 /**
- * Applies Fefo Allocation Service rules and calculations used by inventory operations or reports.
+ * Builds a deterministic first-expiry-first-out allocation from candidate batch snapshots. Only positive-quantity, active, non-expired batches are eligible; allocation order is expiry date, receipt date, then batch ID. The result reports insufficient stock without returning a partial allocation, allowing the caller to decide whether to stop or begin the separately authorized override flow.
  */
 public class FefoAllocationService
 {
@@ -31,6 +31,11 @@ public class FefoAllocationService
     }
 
 
+    /**
+     * Creates the allocator with the timezone used to interpret expiry timestamps as calendar dates.
+     * @param businessZoneId timezone used for the expiry-day eligibility boundary
+     * @throws IllegalArgumentException when the timezone is null
+     */
     public FefoAllocationService(
             ZoneId businessZoneId)
     {
@@ -70,6 +75,7 @@ public class FefoAllocationService
     }
 
 
+    /** Uses an explicit business date so callers and tests can evaluate expiry boundaries deterministically. */
     Result allocate(
             List<BatchEntity> batches,
             int requestedQuantity,

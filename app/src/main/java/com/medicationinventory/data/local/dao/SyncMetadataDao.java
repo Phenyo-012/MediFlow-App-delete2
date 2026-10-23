@@ -13,7 +13,7 @@ import com.medicationinventory.data.local.entity.SyncMetadataEntity;
 
 
 /**
- * Declares Room queries and updates for Sync Metadata records used by local repositories.
+ * Stores durable synchronization timestamps and metadata by key so screens and workers can observe the last successful run after process restart.
  */
 @Dao
 public interface SyncMetadataDao

@@ -3,7 +3,7 @@ package com.medicationinventory.model.enums;
 
 
 /**
- * Defines supported Correction Direction values shared by inventory and authorization workflows.
+ * Sign of a stock correction: {@code IN} increases recorded quantity and {@code OUT} decreases it.
  */
 public enum CorrectionDirection
 {

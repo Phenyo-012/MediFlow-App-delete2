@@ -16,7 +16,11 @@ import java.util.Set;
 
 
 /**
- * Reads or writes Firestore User Profile Data Source data in Firestore and translates asynchronous results for app callers.
+ * Loads application user profiles from the Firestore {@code users} collection,
+ * mapping role identifiers and permission values into the domain model. The
+ * server-only lookup deliberately distinguishes a missing profile from a
+ * Firebase-authenticated identity: callers can reject sign-in when the app-side
+ * account record is absent or malformed.
  */
 public class FirestoreUserProfileDataSource
 {
@@ -34,6 +38,15 @@ public class FirestoreUserProfileDataSource
     {
         this.firestore = FirebaseFirestore.getInstance();
     }
+    /**
+     * Fetches the application profile for a Firebase UID from the server and
+     * converts Firestore role and permission fields into a domain profile. Missing
+     * documents and malformed records are returned as errors so authentication
+     * callers can distinguish them from a valid Firebase identity.
+     *
+     * @param uid Firebase account UID whose application profile is required
+     * @param callback receives the mapped profile or lookup/mapping failure
+     */
     public void getUserProfile(String uid, UserProfileCallback callback)
     {
         if (uid == null || uid.trim().isEmpty())
@@ -121,6 +134,15 @@ public class FirestoreUserProfileDataSource
         return permissions;
     }
 
+    /**
+     * Observes profile changes for the supplied UID and forwards mapped profile
+     * snapshots or listener errors. The returned registration must be removed by
+     * the owner when the observation is no longer needed.
+     *
+     * @param uid Firebase account UID to observe
+     * @param callback receives profile snapshots and listener failures
+     * @return registration used to stop the Firestore listener
+     */
     public ListenerRegistration listenToUserProfile(
             String uid,
             UserProfileListener callback)

@@ -131,8 +131,13 @@ function requireBearerToken(
 
 
 /**
- * Contains the handle error step, keeping that decision separate from the HTTP
- * handler or test setup.
+ * Converts known authentication and application errors to their public status,
+ * code, and message. Unexpected failures are logged and returned as a generic
+ * server error so internal exception details are not exposed in the response.
+ *
+ * @param {Error} error failure raised while handling the permissions request
+ * @param {Object} response Vercel response object
+ * @return {*} JSON error response
  */
 function handleError(
     error,

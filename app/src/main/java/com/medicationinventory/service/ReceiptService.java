@@ -30,7 +30,7 @@ import java.util.UUID;
 
 
 /**
- * Applies Receipt Service business rules used by inventory operations and reports.
+ * Coordinates the receipt workflow from form validation through current-account authorization, medicine and batch checks, and atomic local operation creation. A successful local save remains pending until the trusted backend confirms it; the scheduler is then asked to upload it. Existing-batch top-ups use a separate explicit path so a duplicate batch number cannot silently increase stock.
  */
 public class ReceiptService
 {
@@ -92,6 +92,15 @@ public class ReceiptService
      * Adds stock to the selected existing batch only after confirming it belongs to
      * the medicine and remains eligible for receipt. This explicit path avoids turning
      * a duplicate new-batch receipt into an accidental top-up.
+     */
+    /**
+     * Adds a receipt to a selected batch only after confirming its medicine, status, expiry, and quantity.
+     * This explicit operation preserves the existing batch identity and does not create a new batch.
+     * @param medicineId medicine expected to own the batch
+     * @param batchId selected existing batch
+     * @param quantityText quantity entered by the user
+     * @param receivedDate receipt date in epoch milliseconds
+     * @param callback receives validation, authorization, or persistence outcomes
      */
     public void receiveIntoExistingBatch(String medicineId, String batchId,
                                          String quantityText, long receivedDate, ReceiptCallback callback) {

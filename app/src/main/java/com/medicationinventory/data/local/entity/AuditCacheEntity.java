@@ -9,7 +9,9 @@ import androidx.room.PrimaryKey;
 
 
 /**
- * Persists the local Audit Cache record used by offline inventory workflows.
+ * Caches auditable server events for the audit-log screen. Action, entity, actor, timestamp, and
+ * serialized details preserve the fields presented to administrators; this cache supports offline
+ * viewing and is distinct from the authoritative Firestore audit record.
  */
 @Entity(
         tableName = "audit_cache",

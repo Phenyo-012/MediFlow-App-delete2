@@ -13,6 +13,10 @@ import java.util.List;
 /**
  * Delegates user, role, and permission administration requests to the trusted backend data source.
  */
+    /**
+     * Loads administrative user data by delegating every read and mutation to the trusted backend source.
+     * This class contains no local privilege decision; callers present results while backend authorization remains authoritative.
+     */
 public class AdminUserRepository
 {
     private final TrustedUserAdminDataSource
@@ -35,6 +39,7 @@ public class AdminUserRepository
     }
 
 
+    /** Loads user summaries from the protected backend endpoint. */
     public void loadUsers(
             Callback callback)
     {
@@ -142,6 +147,12 @@ public class AdminUserRepository
         );
     }
 
+    /**
+     * Changes active state through the backend, which enforces the administrator permission and account rules.
+     * @param uid target Firebase UID
+     * @param active requested state
+     * @param callback receives whether a change occurred or a backend error
+     */
     public void setUserActiveState(
             String uid,
             boolean active,

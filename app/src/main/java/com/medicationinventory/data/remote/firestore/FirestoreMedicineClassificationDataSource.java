@@ -11,7 +11,11 @@ import com.medicationinventory.model.domain.MedicineClassification;
 
 
 /**
- * Reads or writes Firestore Medicine Classification Data Source data in Firestore and translates asynchronous results for app callers.
+ * Reads a medicine's ABC/VED classification from the Firestore
+ * {@code medicineClassifications} collection and maps the document to the
+ * classification domain model. Reads request the server explicitly; write
+ * authority and restricted-data access are handled by the trusted path and
+ * repository policy rather than by this read adapter.
  */
 public class FirestoreMedicineClassificationDataSource
 {
@@ -39,6 +43,14 @@ public class FirestoreMedicineClassificationDataSource
     }
 
 
+    /**
+     * Loads one classification document from the server and maps its ABC/VED
+     * values to the domain object. Blank medicine IDs fail immediately; Firestore
+     * lookup or field-mapping failures are delivered to the callback.
+     *
+     * @param medicineId document ID of the medicine classification
+     * @param callback receives the mapped classification or lookup/mapping error
+     */
     public void getForMedicine(
             String medicineId,
             ClassificationCallback callback)

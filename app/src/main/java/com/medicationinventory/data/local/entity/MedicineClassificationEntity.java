@@ -9,7 +9,9 @@ import androidx.room.PrimaryKey;
 
 
 /**
- * Persists the local Medicine Classification record used by offline inventory workflows.
+ * Stores locally cached ABC and VED values for one medicine ID together with their update time.
+ * Inventory and analytics screens use this restricted classification cache only after a separate
+ * access gate grants permission; cloud mutations remain controlled by the trusted backend.
  */
 @Entity(
         tableName = "medicine_classifications",

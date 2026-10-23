@@ -23,7 +23,7 @@ import java.util.UUID;
 
 
 /**
- * Applies Adjustment Service rules and calculations used by inventory operations or reports.
+ * Creates auditable, permission-checked adjustments to a medicine batch. The service validates the requested direction, quantity, reason, and target, then rechecks the active user and relevant inventory before atomically recording a pending operation and movement. It schedules trusted processing after the local commit; the adjustment does not directly establish a cloud-confirmed balance.
  */
 public class AdjustmentService
 {
@@ -77,6 +77,12 @@ public class AdjustmentService
     /**
      * Validates and authorizes a manual quantity change before creating a pending operation.
      * The adjustment reason is retained with the transaction for later audit and sync.
+     * @param medicineId medicine whose batch is adjusted
+     * @param batchId target batch
+     * @param direction whether stock is added or removed
+     * @param quantityText user-entered quantity, validated before persistence
+     * @param reason explanation retained with the operation history
+     * @param callback receives validation, authorization, save, or processing status
      */
     public void commitAdjustment(
             String medicineId,

@@ -33,7 +33,7 @@ import java.util.List;
 
 
 /**
- * Implements the Android screen for Create User and connects user actions to application state.
+ * Collects a new employee email, initial role, and explicit permission selections, then submits them through CreateUserViewModel. The screen renders server-provided role and permission catalogues and displays creation outcomes; the trusted backend remains responsible for creating the Firebase account and validating administrative authority.
  */
 public class CreateUserActivity
         extends AppCompatActivity

@@ -12,7 +12,10 @@ import java.util.List;
 
 
 /**
- * Owns observable screen state and user actions for Audit Log.
+ * Exposes the repository's locally cached audit records and coordinates an explicit refresh from
+ * the trusted audit source. Refresh state prevents overlapping requests; if the network refresh
+ * fails, the current Room cache remains available and the ViewModel reports that fallback rather
+ * than replacing it with an empty history.
  */
 public class AuditLogViewModel
         extends ViewModel
@@ -83,6 +86,7 @@ public class AuditLogViewModel
 
 
 
+    /** Requests a recent server audit snapshot while leaving cached rows available during failure. */
     public void refresh()
     {
         if (Boolean.TRUE.equals(

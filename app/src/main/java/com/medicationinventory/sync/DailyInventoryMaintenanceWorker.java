@@ -14,7 +14,7 @@ import com.medicationinventory.service.DailyInventoryMaintenanceService;
 
 
 /**
- * Coordinates Daily Inventory Maintenance Worker work between the local database and shared cloud state.
+ * Runs the scheduled local expiry and alert maintenance service in WorkManager and returns retry or success according to the service outcome.
  */
 public class DailyInventoryMaintenanceWorker
         extends Worker

@@ -48,8 +48,13 @@ class ApplicationHttpError extends Error {
  * @return {Object}
  */
 /**
- * Applies create application authorization on the server. Signing in does not
- * automatically grant this permission.
+ * Builds an authorization boundary around an injectable Firestore provider. The returned checks
+ * load the current user document on every request, reject missing, mismatched, or inactive
+ * profiles, and derive permissions from that server-managed document rather than client state.
+ * Tests can supply an isolated provider while production uses Firebase Admin Firestore.
+ *
+ * @param {Function} firestoreProvider Firestore provider, defaulting to the Admin SDK provider
+ * @return {{requireApplicationPermission: Function, requireActiveUser: Function}}
  */
 function createApplicationAuthorization(
     firestoreProvider,
@@ -72,8 +77,13 @@ function createApplicationAuthorization(
    * @return {Promise<object>} Authorised context.
    */
   /**
-   * Contains the require active user step, keeping that decision separate from the
-   * HTTP handler or test setup.
+   * Resolves an authenticated UID to its current active profile. This check deliberately reads
+   * Firestore at request time so deactivation or profile corruption is observed immediately; it
+   * returns the database, UID, profile, and normalized permissions for the next authorization step.
+   *
+   * @param {string} authenticatedUid UID taken from a verified Firebase ID token
+   * @return {Promise<object>} active server profile context
+   * @throws {ApplicationHttpError} when the profile is absent, invalid, or inactive
    */
   async function requireActiveUser(authenticatedUid) {
     const uid = requireText(authenticatedUid, "Authenticated user ID");
@@ -98,8 +108,14 @@ function createApplicationAuthorization(
   }
 
   /**
-   * Applies require permission on the server. Signing in does not automatically
-   * grant this permission.
+   * Requires both an active user profile and the requested server-side permission. A signed-in
+   * identity without that permission receives a stable 403 application error; successful callers
+   * receive the same profile context used by downstream service logic.
+   *
+   * @param {string} authenticatedUid UID from the verified token
+   * @param {string} requiredPermission permission key required for the operation
+   * @return {Promise<object>} active profile context authorized for the requested permission
+   * @throws {ApplicationHttpError} when the permission is absent or the profile is not active
    */
   async function requirePermission(authenticatedUid, requiredPermission) {
     const permission = requireText(requiredPermission, "Required permission");
@@ -132,8 +148,13 @@ const defaultAuthorization =
  * @return {Promise<object>} Authorised context.
  */
 /**
- * Applies require application permission on the server. Signing in does not
- * automatically grant this permission.
+ * Applies the production authorization checker to one protected operation. Callers pass the UID
+ * only after Firebase token verification; this function then reads current profile permissions
+ * rather than trusting claims or cached Android profile data.
+ *
+ * @param {string} authenticatedUid verified Firebase UID
+ * @param {string} requiredPermission application permission required by the endpoint
+ * @return {Promise<object>} active authorized profile context
  */
 async function requireApplicationPermission(
     authenticatedUid,
@@ -202,8 +223,13 @@ function permissionsForUser(
  * @return {string} Normalised value.
  */
 /**
- * Contains the require text step, keeping that decision separate from the HTTP
- * handler or test setup.
+ * Requires a non-empty string and returns its trimmed value for authorization checks. This keeps
+ * blank IDs and permission names from being interpreted differently by individual endpoints.
+ *
+ * @param {*} value candidate request or profile value
+ * @param {string} fieldName safe label included in the validation response
+ * @return {string} trimmed non-empty value
+ * @throws {ApplicationHttpError} with status 400 when the value is missing or blank
  */
 function requireText(
     value,

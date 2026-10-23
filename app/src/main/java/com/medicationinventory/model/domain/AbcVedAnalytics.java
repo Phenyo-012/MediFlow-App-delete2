@@ -12,7 +12,11 @@ import java.util.Map;
 
 
 /**
- * Represents Abc Ved Analytics data used by inventory rules and application workflows.
+ * Snapshot used by analytics screens to display the counts already assigned to
+ * valid and invalid medicine classifications. It carries separate ABC and VED
+ * distributions plus combined pair counts; classification decisions themselves
+ * are made elsewhere. Collection inputs are defensively copied and exposed as
+ * unmodifiable values so a displayed report cannot change after construction.
  */
 public final class AbcVedAnalytics
 {

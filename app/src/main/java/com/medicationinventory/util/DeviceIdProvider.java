@@ -8,7 +8,10 @@ import java.util.UUID;
 
 
 /**
- * Provides Device Id Provider behavior used by the MediFlow application.
+ * Supplies a stable installation identifier for inventory operation metadata.
+ * The value is persisted in app-private preferences so retries from this install
+ * keep the same device identity; it is not an account credential or an
+ * authorization signal.
  */
 public class DeviceIdProvider
 {
@@ -25,6 +28,13 @@ public class DeviceIdProvider
                 Context.MODE_PRIVATE);
     }
 
+    /**
+     * Returns the saved installation ID or creates and persists one on first use.
+     * Synchronization prevents concurrent callers in this process from generating
+     * different IDs during the initial read/write window.
+     *
+     * @return stable UUID associated with this app installation
+     */
     public synchronized String getDeviceId()
     {
         String existing = preferences.getString(KEY_DEVICE_ID, null);

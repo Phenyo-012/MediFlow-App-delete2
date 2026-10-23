@@ -36,7 +36,7 @@ import com.medicationinventory.ui.users.UserDetailActivity;
 
 
 /**
- * Implements the Android screen for User Management and connects user actions to application state.
+ * Displays the trusted backend user list and gates administrative navigation according to the current profile permissions. Selecting a row opens its user-detail screen; the server still rechecks authorization for every privileged operation.
  */
 public class UserManagementActivity
         extends AppCompatActivity

@@ -6,7 +6,9 @@ import androidx.room.PrimaryKey;
 
 
 /**
- * Persists the local User Profile record used by offline inventory workflows.
+ * Caches a Firebase UID's profile fields, role, serialized permissions, active state, and last
+ * server-validation time. The profile supports offline display and policy decisions, but backend
+ * endpoints re-read authoritative user data before privileged mutations.
  */
 @Entity(tableName = "user_profiles")
 public class UserProfileEntity

@@ -25,7 +25,12 @@ import javax.net.ssl.HttpsURLConnection;
 
 
 /**
- * Calls the trusted backend for Trusted Inventory Processor Data Source operations and translates HTTP outcomes for app callers.
+ * Submits locally queued inventory operations to the trusted processor endpoint.
+ * The client sends the current Firebase ID token and stable operation ID; the
+ * backend owns authorization and the authoritative stock transaction. HTTP
+ * outcomes are mapped to the operation result or processor exception expected
+ * by the sync repository, so a transport failure does not look like a committed
+ * stock change.
  */
 public class TrustedInventoryProcessorDataSource {
 

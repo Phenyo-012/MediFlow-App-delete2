@@ -6,7 +6,10 @@ import com.medicationinventory.model.enums.AlertType;
 
 
 /**
- * Represents Alert Condition data used by inventory rules and application workflows.
+ * Describes one alert condition found while evaluating a medicine or batch.
+ * The fields retain the measurements and thresholds behind the result—such as
+ * usable stock, reorder levels, near-expiry quantity, or expiry date—so alert
+ * reconciliation can identify the condition and build a useful message.
  */
 public class AlertCondition
 {

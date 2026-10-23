@@ -26,7 +26,10 @@ import java.util.List;
 
 
 /**
- * Implements the Alert Report View Model behavior for its Android screen and the application state it presents.
+ * Coordinates the local alert report with date, medicine, batch, alert-type, and status selections.
+ * It derives preset ranges through {@link ReportDateRangeService}, swaps the repository's LiveData
+ * sources as filters change, and exposes medicine/batch options for dependent selectors. Report
+ * rows remain a Room-backed view of locally reconciled alerts rather than a separate cloud query.
  */
 public class AlertReportViewModel
         extends ViewModel

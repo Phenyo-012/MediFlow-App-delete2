@@ -12,7 +12,7 @@ import java.util.List;
 
 
 /**
- * Declares Room queries and updates for Sync Queue records used by local repositories.
+ * Stores pending upload retry state and selects due work for background processing. Retry and manual-unblock updates are conditional so queue status reflects an actual state transition.
  */
 @Dao
 public interface SyncQueueDao

@@ -14,7 +14,7 @@ import java.util.List;
 
 
 /**
- * Declares Room queries and updates for Medicine Classification records used by local repositories.
+ * Stores ABC/VED classification rows and exposes medicine-specific and analytics queries. Access control is enforced by MedicineClassificationRepository and its session gate rather than by these local SQL queries.
  */
 @Dao
 public interface MedicineClassificationDao

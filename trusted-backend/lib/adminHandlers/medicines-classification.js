@@ -159,8 +159,12 @@ function requireBearerToken(
 
 
 /**
- * Contains the require medicine ID step, keeping that decision separate from the
- * HTTP handler or test setup.
+ * Reads and trims the medicine ID supplied by the rewritten admin route, failing
+ * with a client error when the selector has no usable ID.
+ *
+ * @param {Object} request incoming route request
+ * @return {string} non-empty medicine ID
+ * @throws {ApplicationHttpError} when the medicine ID is missing or blank
  */
 function requireMedicineId(
     request,
@@ -187,8 +191,13 @@ function requireMedicineId(
 
 
 /**
- * Contains the require body step, keeping that decision separate from the HTTP
- * handler or test setup.
+ * Accepts an already-parsed object body or parses a non-empty JSON string body.
+ * Arrays, primitives, malformed JSON, and missing bodies are rejected before
+ * classification fields reach the admin service.
+ *
+ * @param {Object} request incoming admin request
+ * @return {Object} parsed request body
+ * @throws {ApplicationHttpError} when the body is absent or not a JSON object
  */
 function requireBody(
     request,
@@ -248,8 +257,13 @@ function requireBody(
 
 
 /**
- * Contains the handle error step, keeping that decision separate from the HTTP
- * handler or test setup.
+ * Maps authentication and classification validation failures to their public
+ * status, code, and message. Unexpected failures become a generic server error
+ * so the endpoint does not disclose internal exception details.
+ *
+ * @param {Error} error failure raised by the classification route
+ * @param {Object} response Vercel response object
+ * @return {*} JSON error response
  */
 function handleError(
     error,

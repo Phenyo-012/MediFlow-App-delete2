@@ -9,7 +9,9 @@ import java.util.Set;
 
 
 /**
- * Handles Inventory Alert Notification Trigger behavior for inventory-related Android notifications.
+ * Watches Room's alert table and asks WorkManager to dispatch notifications after invalidation.
+ * Startup also schedules an initial pass to cover alerts that existed before the observer was
+ * registered; unique work policy in the scheduler coalesces repeated database changes.
  */
 public final class InventoryAlertNotificationTrigger {
 

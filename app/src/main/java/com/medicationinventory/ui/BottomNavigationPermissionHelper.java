@@ -14,7 +14,10 @@ import com.medicationinventory.model.enums.Permission;
 
 
 /**
- * Contains Bottom Navigation Permission Helper behavior used by the Android interface.
+ * Applies profile-derived visibility to the application's bottom-navigation destinations. This is
+ * a presentation guard that avoids offering screens unavailable to the current user; protected
+ * activities and backend operations must still enforce their own permissions because hidden menu
+ * items are not an authorization boundary.
  */
 public final class BottomNavigationPermissionHelper
 {
@@ -25,6 +28,7 @@ public final class BottomNavigationPermissionHelper
 
 
 
+    /** Hides permission-protected destinations while profile authorization is still loading. */
     public static void hideProtectedItems(
             BottomNavigationView bottomNavigation)
     {
@@ -75,6 +79,13 @@ public final class BottomNavigationPermissionHelper
 
 
 
+    /**
+     * Shows each protected destination only when an active profile grants its matching permission.
+     * A missing or inactive profile hides all destinations until a valid profile is available.
+     *
+     * @param bottomNavigation menu whose item visibility and enabled state are updated
+     * @param profile current locally available user profile, or {@code null} while unresolved
+     */
     public static void apply(
             BottomNavigationView bottomNavigation,
             UserProfile profile)

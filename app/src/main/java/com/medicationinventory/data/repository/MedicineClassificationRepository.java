@@ -23,7 +23,7 @@ import java.util.Set;
 
 
 /**
- * Coordinates local and remote Medicine Classification data access for the rest of the application.
+ * Maps classification records between Room and Firestore and routes changes through the trusted mutation source. Restricted classification reads and cache writes are additionally guarded by the current user gate; the cache guard is responsible for requiring both local and server-confirmed permission before opening access.
  */
 public class MedicineClassificationRepository
 {
@@ -34,6 +34,7 @@ public class MedicineClassificationRepository
 
     private volatile RestrictedClassificationAccessGate restrictedAccessGate;
 
+    /** Installs the session gate used to reject restricted classification reads and cache writes after access changes. */
     public void installRestrictedAccessGate(RestrictedClassificationAccessGate gate) {
         if (gate == null) throw new IllegalArgumentException("Restricted access gate required");
         this.restrictedAccessGate = gate;
@@ -128,6 +129,11 @@ public class MedicineClassificationRepository
     }
 
 
+    /**
+     * Observes one medicine classification while the access gate is open; otherwise emits null.
+     * @param medicineId medicine identifier
+     * @return gated live classification value
+     */
     public LiveData<MedicineClassification> observeForMedicine(
             String medicineId)
     {
@@ -290,6 +296,9 @@ public class MedicineClassificationRepository
 
 
 
+    /**
+     * Refreshes a medicine classification from Firestore and guards the asynchronous cache update with its captured access ticket.
+     */
     public void refreshFromServer(
             String medicineId,
             RefreshCallback callback)
@@ -618,6 +627,7 @@ public class MedicineClassificationRepository
     }
 
 
+    /** Clears local restricted classification rows when permission or cache ownership is no longer trusted. */
     public void clearRestrictedCache(
             MutationCallback callback)
     {
@@ -678,6 +688,10 @@ public class MedicineClassificationRepository
         return medicineId.trim();
     }
 
+    /**
+     * Sends a classification change through the trusted backend and refreshes the server snapshot after commit.
+     * Permission and ticket checks protect the local mutation path; backend authorization remains authoritative.
+     */
     public void setClassification(
             String medicineId,
             String abcClassification,

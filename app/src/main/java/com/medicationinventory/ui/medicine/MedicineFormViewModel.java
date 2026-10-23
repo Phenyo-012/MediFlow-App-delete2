@@ -23,7 +23,11 @@ import java.util.UUID;
 
 
 /**
- * Implements the Medicine Form View Model behavior for its Android screen and the application state it presents.
+ * Owns add/edit form state for a medicine and mediates validation, account permissions, and the
+ * shared-master save workflow. Existing records are loaded for editing; new records are validated
+ * locally before the repository submits them to the trusted medicine service. The UI receives
+ * explicit validation, in-progress, saved, and rejected states so a backend rejection is not
+ * presented as a successful catalog update.
  */
 public class MedicineFormViewModel
         extends ViewModel
@@ -152,6 +156,23 @@ public class MedicineFormViewModel
     }
 
 
+    /**
+     * Validates the submitted fields and starts the authorized shared-medicine save path. While a
+     * request is in flight, duplicate saves are suppressed; completion updates the form state only
+     * through the repository callback, which can distinguish authoritative acceptance from
+     * rejection.
+     *
+     * @param existingMedicineId identifier when editing, or {@code null} for a new record
+     * @param medicineCode medicine identifier entered in the form; leading zeroes are preserved
+     * @param medicineName display name
+     * @param genericName generic name, when supplied
+     * @param category selected medicine category
+     * @param strength medicine strength text
+     * @param dosageForm dosage form label
+     * @param unitOfMeasure unit used for stock quantities
+     * @param reorderLevelText threshold that triggers a reorder recommendation
+     * @param targetStockLevelText desired stock level used to calculate the recommendation quantity
+     */
     public void saveMedicine(
             String existingMedicineId,
             String medicineCode,

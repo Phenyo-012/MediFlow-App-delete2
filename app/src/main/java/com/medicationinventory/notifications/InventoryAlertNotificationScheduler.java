@@ -14,7 +14,9 @@ import java.util.concurrent.TimeUnit;
 
 
 /**
- * Handles Inventory Alert Notification Scheduler behavior for inventory-related Android notifications.
+ * Enqueues network-constrained WorkManager passes for alert notification delivery. Alert changes
+ * request unique one-time work with KEEP semantics so bursts share an existing run, while a daily
+ * periodic request provides a safety check when a change-triggered enqueue was missed.
  */
 public final class InventoryAlertNotificationScheduler {
 
@@ -35,6 +37,7 @@ public final class InventoryAlertNotificationScheduler {
     }
 
 
+    /** Requests one connected-network dispatch after alert data has changed; duplicate enqueues coalesce. */
     public void scheduleAfterAlertChange() {
         OneTimeWorkRequest request = new OneTimeWorkRequest.Builder(
                 InventoryAlertNotificationWorker.class)
@@ -45,6 +48,7 @@ public final class InventoryAlertNotificationScheduler {
     }
 
 
+    /** Registers a once-daily connected-network refresh without replacing an existing periodic schedule. */
     public void schedulePeriodicSafetyCheck() {
         PeriodicWorkRequest request = new PeriodicWorkRequest.Builder(
                 InventoryAlertNotificationWorker.class, 24, TimeUnit.HOURS)

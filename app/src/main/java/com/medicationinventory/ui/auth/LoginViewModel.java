@@ -15,7 +15,7 @@ import com.google.firebase.auth.MultiFactorResolver;
 
 
 /**
- * Implements the Login View Model behavior for its Android screen and the application state it presents.
+ * Models password sign-in and optional TOTP verification as observable login states. The pending Firebase resolver is held only between the password challenge and code verification; successful identity is accepted only after AuthenticationRepository refreshes an active MediFlow profile.
  */
 public class LoginViewModel extends ViewModel
 {
@@ -35,6 +35,7 @@ public class LoginViewModel extends ViewModel
         return loginState;
     }
 
+    /** Starts password sign-in and maps repository callbacks into screen states, including an optional pending MFA challenge. */
     public void signIn(String email, String password)
     {
         pendingTotpResolver = null;
@@ -100,12 +101,18 @@ public class LoginViewModel extends ViewModel
     }
 
 
+    /** Cancels the local MFA challenge state; the caller returns to the ordinary sign-in form. */
     public void cancelTotp() {
         pendingTotpResolver = null;
         loginState.setValue(LoginState.idle());
     }
 
 
+    /**
+     * Validates the six-digit code and completes the pending Firebase resolver.
+     * The resolver remains available after a code error so the user can retry without re-entering the password.
+     * @param code authenticator-app code
+     */
     public void verifyTotp(String code) {
         if (pendingTotpResolver == null) {
             loginState.setValue(LoginState.error("Sign in with your password first."));

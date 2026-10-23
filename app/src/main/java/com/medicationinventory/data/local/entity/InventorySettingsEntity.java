@@ -8,7 +8,9 @@ import androidx.room.PrimaryKey;
 
 
 /**
- * Persists the local Inventory Settings record used by offline inventory workflows.
+ * Caches application-wide inventory thresholds, including the near-expiry warning window, together
+ * with update time and actor metadata. Alert evaluation can read settings offline; writes go through
+ * the trusted settings endpoint and are then reflected back into Room.
  */
 @Entity(
         tableName = "inventory_settings"

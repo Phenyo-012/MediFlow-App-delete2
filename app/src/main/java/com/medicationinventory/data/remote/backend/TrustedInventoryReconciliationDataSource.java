@@ -28,7 +28,10 @@ import javax.net.ssl.HttpsURLConnection;
 
 
 /**
- * Calls the trusted backend for Trusted Inventory Reconciliation Data Source operations and translates HTTP outcomes for app callers.
+ * Reads the trusted processor's terminal result for a previously submitted
+ * operation. This source is used when the local sync queue needs to reconcile an
+ * uncertain submission; it returns backend status and transaction details to
+ * the repository rather than applying inventory changes itself.
  */
 public class TrustedInventoryReconciliationDataSource {
 
@@ -80,6 +83,15 @@ public class TrustedInventoryReconciliationDataSource {
     }
 
 
+    /**
+     * Looks up the trusted processor's result for an operation ID using the
+     * current Firebase session. A missing session or blank ID is reported before
+     * network work begins; the returned terminal status is for local queue
+     * reconciliation and is not applied as a new stock mutation here.
+     *
+     * @param operationId stable ID assigned to the submitted operation
+     * @param callback receives the reconciliation result or a typed failure
+     */
     public void fetchReconciliation(
             String operationId,
             Callback callback

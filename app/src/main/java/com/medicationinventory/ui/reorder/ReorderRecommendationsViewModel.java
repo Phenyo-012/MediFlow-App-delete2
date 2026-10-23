@@ -16,7 +16,10 @@ import java.util.List;
 
 
 /**
- * Owns observable screen state and user actions for Reorder Recommendations.
+ * Exposes active user profile, locally calculated reorder recommendations, and repository errors to
+ * the replenishment screen. Recommendation quantities come from the shared reorder service and
+ * usable stock rules; this ViewModel displays guidance and does not create purchase orders or adjust
+ * stock.
  */
 public class ReorderRecommendationsViewModel
         extends ViewModel

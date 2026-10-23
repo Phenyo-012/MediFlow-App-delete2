@@ -11,7 +11,7 @@ import java.util.List;
 
 
 /**
- * Declares Room queries and updates for Allocation records used by local repositories.
+ * Stores the batch allocations attached to inventory operations. Allocations are inserted with the operation in the stock transaction and removed selectively when a provisional receipt is rejected.
  */
 @Dao
 public interface AllocationDao

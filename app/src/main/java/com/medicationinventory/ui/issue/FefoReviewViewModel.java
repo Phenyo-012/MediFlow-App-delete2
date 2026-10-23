@@ -13,7 +13,10 @@ import java.util.List;
 
 
 /**
- * Owns observable screen state and user actions for Fefo Review.
+ * Coordinates the final review and submission of an issue draft. It loads the separate FEFO override
+ * permission for the review UI, then delegates default or overridden allocations to {@link IssueService},
+ * which rechecks authorization and stock before committing. A loading state suppresses duplicate
+ * confirmation, and success/error states are retained until the activity handles them.
  */
 public class FefoReviewViewModel
         extends ViewModel
@@ -85,6 +88,7 @@ public class FefoReviewViewModel
 
 
 
+    /** Submits an alternate batch allocation with its reason through the service's permission-checked override path. */
     public void confirmOverrideIssue(
             IssueFefoDraft draft,
             List<IssueFefoDraft.Allocation>

@@ -26,7 +26,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 
 /**
- * Observes Room medicine and batch invalidations and coalesces refresh requests before reevaluating alerts.
+ * Bridges Room table invalidations to alert recomputation. Medicine or batch changes request a
+ * refresh on a background executor; an atomic request flag coalesces bursts while the refresh loop
+ * is active, then reloads each medicine and its batches before asking {@link AlertRefreshService}
+ * to reconcile derived alert rows. This observer is local-only and does not start cloud sync.
  */
 public class AlertInventoryObserver
 {
@@ -188,6 +191,10 @@ public class AlertInventoryObserver
     }
 
 
+    /**
+     * Runs one complete local alert refresh synchronously for scheduled maintenance. The method is
+     * synchronized with observer lifecycle changes so callers cannot race observer startup state.
+     */
     public synchronized void refreshAllNowBlocking()
     {
         refreshAllMedicinesInternal();

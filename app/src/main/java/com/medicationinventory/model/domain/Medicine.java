@@ -4,7 +4,11 @@ package com.medicationinventory.model.domain;
 
 
 /**
- * Represents Medicine data used by inventory rules and application workflows.
+ * Medicine master data shared by inventory, receiving, scanning, and reporting.
+ * It contains identifying/barcode-facing details, category and dosage metadata,
+ * stock thresholds, active state, and cloud version timestamps. Batch quantities
+ * are stored separately; a missing category is normalized to the application's
+ * default category when this model is constructed.
  */
 public class Medicine
 {

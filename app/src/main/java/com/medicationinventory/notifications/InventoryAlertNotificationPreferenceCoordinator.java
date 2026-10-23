@@ -13,7 +13,10 @@ import java.util.Set;
 
 
 /**
- * Handles Inventory Alert Notification Preference Coordinator behavior for inventory-related Android notifications.
+ * Applies a user's notification preference changes to visible alerts and schedules a fresh dispatch.
+ * It verifies that the requested UID is still the Firebase account before doing work, cancels all
+ * visible alerts when the master switch is disabled, and otherwise reads Room alerts asynchronously
+ * to cancel deliveries that are no longer active or enabled.
  */
 public final class InventoryAlertNotificationPreferenceCoordinator {
 

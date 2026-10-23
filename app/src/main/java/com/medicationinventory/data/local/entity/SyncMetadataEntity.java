@@ -7,7 +7,9 @@ import androidx.room.PrimaryKey;
 
 
 /**
- * Persists the local Sync Metadata record used by offline inventory workflows.
+ * Stores small synchronization checkpoints keyed by purpose, such as the last successful sync time,
+ * server timestamp, or serialized fingerprint. Coordinators compare these values with later remote
+ * snapshots; a checkpoint is sync bookkeeping rather than an inventory record.
  */
 @Entity(
         tableName = "sync_metadata"

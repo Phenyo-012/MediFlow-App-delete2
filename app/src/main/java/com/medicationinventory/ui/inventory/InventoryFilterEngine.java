@@ -16,7 +16,11 @@ import java.util.Locale;
 
 
 /**
- * Contains Inventory Filter Engine behavior used by the Android interface.
+ * Applies the inventory screen's search, category, stock, expiry, and optional ABC/VED filters,
+ * then sorts a new result list without changing the repository-provided source. Classification
+ * matching is performed only when the caller supplies authorization and a classification map;
+ * missing classification rows do not match active ABC/VED criteria. Deterministic medicine-name
+ * and ID tie-breakers keep rows stable when primary sort values are equal.
  */
 public final class InventoryFilterEngine {
 
@@ -29,6 +33,17 @@ public final class InventoryFilterEngine {
     }
 
 
+    /**
+     * Filters and sorts the inventory snapshot for the current UI state. Search checks name, code,
+     * generic name, and category case-insensitively; expiry filters use the precomputed unit
+     * buckets on each item, while ABC/VED criteria are honored only for an authorized caller.
+     *
+     * @param source unmodified inventory items to display
+     * @param state current filter and sort selections, defaulted when absent
+     * @param classifications classification rows keyed by medicine ID
+     * @param mayViewClassifications whether classification data may be considered
+     * @return a new, sorted list containing matching non-null items
+     */
     public static List<InventoryMedicineItem> apply(
             List<InventoryMedicineItem> source, InventoryFilterState state,
             Map<String, MedicineClassification> classifications, boolean mayViewClassifications) {

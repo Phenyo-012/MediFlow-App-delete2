@@ -32,7 +32,7 @@ import java.util.Set;
 
 
 /**
- * Applies trusted reconciliation results to related local batches, transactions, alerts, and sync metadata.
+ * Applies only terminal results to the matching local operation inside one Room transaction. It validates result identity and affected batches, then updates confirmed or rejected local rows, queue state, and sync metadata together so observers cannot see a partially reconciled operation.
  */
 public class InventoryReconciliationRepository
 {
@@ -85,6 +85,13 @@ public class InventoryReconciliationRepository
     }
 
 
+    /**
+     * Applies a terminal trusted result atomically to the corresponding local operation and related inventory rows.
+     * Non-terminal or malformed results are rejected before entering the Room transaction.
+     * @param result trusted reconciliation result; must include an operation ID and terminal status
+     * @throws IllegalArgumentException when required result identity or terminal status is absent
+     * @throws IllegalStateException when the local operation is missing or unsupported
+     */
     public void reconcile(
             InventoryReconciliationResult result)
     {

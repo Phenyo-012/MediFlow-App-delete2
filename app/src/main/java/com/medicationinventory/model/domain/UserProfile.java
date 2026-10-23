@@ -11,7 +11,11 @@ import java.util.Set;
 
 
 /**
- * Represents User Profile data used by inventory rules and application workflows.
+ * Application-side profile associated with a Firebase UID. It carries role and
+ * explicit permissions used by UI and repository gates, plus active state and
+ * the time the profile was validated. A profile can support cached/offline UI
+ * decisions, but trusted backend authorization remains authoritative for cloud
+ * mutations.
  */
 public class UserProfile
 {

@@ -3,7 +3,7 @@ package com.medicationinventory.model.enums;
 
 
 /**
- * Defines supported Inventory Operation Type values shared by inventory and authorization workflows.
+ * Supported stock-changing requests: receipt, issue, adjustment, and correction.
  */
 public enum InventoryOperationType
 {

@@ -1,12 +1,12 @@
 <?xml version='1.0' encoding='utf-8'?>
-<!-- Layout for receive stock. The Activity, Fragment or adapter uses these IDs to bind state and user actions. -->
+<!-- Receipt entry screen for new batches and explicit top-ups to an existing batch. The Activity switches the visible batch controls by mode, validates scanned suggestions with the user, and shows a pending state after local queueing; server confirmation happens later. -->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F5F7FA">
 
-    <!-- receiveStockHeader is referenced by the screen code when it renders or handles user input. -->
+    <!-- Header remains visible above the scrollable receipt form and provides the back navigation action. -->
     <LinearLayout
         android:id="@+id/receiveStockHeader"
         android:layout_width="0dp"
@@ -259,7 +259,7 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- formErrorText gives the user feedback when there is no content or an operation cannot complete. -->
+            <!-- Displays validation or save errors without changing the values already entered in the receipt form. -->
             <TextView
                 android:id="@+id/formErrorText"
                 android:layout_width="match_parent"
@@ -268,7 +268,7 @@
                 android:textColor="?attr/colorError"
                 android:visibility="gone" />
 
-            <!-- receiptProgress communicates that the screen is waiting for data or a submitted action. -->
+            <!-- Shown while medicine or batch data loads and while the receipt action is being saved. -->
             <ProgressBar
                 android:id="@+id/receiptProgress"
                 android:layout_width="wrap_content"
@@ -291,6 +291,7 @@
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
+    <!-- Separates a locally queued receipt from the editable form while sync is pending. -->
     <LinearLayout
         android:id="@+id/pendingStateContainer"
         android:layout_width="0dp"

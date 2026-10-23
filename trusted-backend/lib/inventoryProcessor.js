@@ -2569,8 +2569,12 @@ function normalizeBatchNumber(value) {
 
 
 /**
- * Checks receipt payload before the value reaches trusted storage. Invalid or
- * ambiguous input should fail here.
+ * Validates receipt mode, medicine and batch identifiers, dates, quantities, and allocation shape
+ * before the transaction reads or changes stock. New-batch receipts and explicit existing-batch
+ * top-ups have different required fields, so malformed requests cannot silently change modes.
+ *
+ * @param {object} operation submitted operation document
+ * @return {{valid: boolean, code?: string, message?: string, allocation?: object, receiptMode?: string}}
  */
 function validateReceiptPayload(
     operation,
@@ -2696,8 +2700,13 @@ function validateReceiptPayload(
 
 
 /**
- * Checks issue payload before the value reaches trusted storage. Invalid or
- * ambiguous input should fail here.
+ * Validates requested issue quantity and each client allocation, including positive quantities,
+ * unique batch IDs, contiguous allocation order, and a total equal to the request. Passing this
+ * structural check does not authorize the issue or establish that those batches still have stock;
+ * the transaction performs those checks against current Firestore state.
+ *
+ * @param {object} operation submitted issue document
+ * @return {{valid: boolean, code?: string, message?: string, allocations?: Array<object>}}
  */
 function validateIssuePayload(
     operation,
@@ -2807,8 +2816,12 @@ function validateIssuePayload(
 }
 
 /**
- * Checks adjustment payload before the value reaches trusted storage. Invalid or
- * ambiguous input should fail here.
+ * Validates adjustment direction, reason, requested quantity, and the single-batch allocation
+ * shape. It rejects metadata that belongs to receipt, issue override, or correction operations;
+ * authorization and current quantity checks are performed later inside the transaction.
+ *
+ * @param {object} operation submitted adjustment document
+ * @return {{valid: boolean, code?: string, message?: string, direction?: string, reason?: string, allocation?: object}}
  */
 function validateAdjustmentPayload(
     operation,
@@ -2939,8 +2952,12 @@ function validateAdjustmentPayload(
 }
 
 /**
- * Checks correction payload before the value reaches trusted storage. Invalid or
- * ambiguous input should fail here.
+ * Validates a compensating correction's direction, reason, reference to another operation, and
+ * one-batch allocation. The local payload must describe one exact quantity; the transaction then
+ * checks the referenced confirmed movement and current batch state before applying its inverse.
+ *
+ * @param {object} operation submitted correction document
+ * @return {{valid: boolean, code?: string, message?: string, direction?: string, reason?: string, relatedOperationId?: string, allocation?: object}}
  */
 function validateCorrectionPayload(
     operation,
@@ -3286,7 +3303,9 @@ function buildAuthoritativeFefo(
 
 
 /**
- * Handles allocations match using the server's accepted stock and expiry order.
+ * Compares two allocations by batch and quantity while ignoring array order. The caller uses this
+ * to determine whether a device's proposed issue follows the server's authoritative FEFO result;
+ * batch identity and quantity still must match exactly.
  */
 function allocationsMatch(
     left,
@@ -3332,7 +3351,9 @@ function allocationsMatch(
 
 
 /**
- * Handles allocation map using the server's accepted stock and expiry order.
+ * Indexes an allocation list by batch ID for order-independent comparison in
+ * {@link allocationsMatch}. Allocation validation guarantees duplicate batch IDs were rejected
+ * before this helper is used.
  */
 function allocationMap(
     allocations,
@@ -3416,8 +3437,12 @@ function normalizedOptionalString(
 
 
 /**
- * Contains the firestore timestamp millis step, keeping that decision separate
- * from the HTTP handler or test setup.
+ * Reads a Firestore timestamp as epoch milliseconds, also accepting timestamp-like test values
+ * and positive integer timestamps. Unsupported or invalid date values return null, which
+ * lets validation reject authoritative batch records with unusable dates.
+ *
+ * @param {*} value Firestore or compatible date value
+ * @return {number|null} epoch milliseconds when the value is supported
  */
 function firestoreTimestampMillis(
     value,
@@ -3517,8 +3542,16 @@ function conflictOperation(
 
 
 /**
- * Contains the confirm already processed step, keeping that decision separate from
- * the HTTP handler or test setup.
+ * Marks an operation confirmed when the transaction finds its already-created
+ * transaction record. The processor validates that record's operation ID first;
+ * this update records the idempotent replay result without applying stock a
+ * second time.
+ *
+ * @param {Object} transaction active Firestore transaction
+ * @param {Object} operationRef reference to the submitted operation document
+ * @param {string} operationId stable client operation ID
+ * @param {string} message replay explanation returned to the client
+ * @return {Object} terminal confirmed result
  */
 function confirmAlreadyProcessed(
     transaction,
@@ -3552,8 +3585,13 @@ function confirmAlreadyProcessed(
 
 
 /**
- * Contains the validation error step, keeping that decision separate from the HTTP
- * handler or test setup.
+ * Builds the code/message pair returned by operation-envelope validation. Keeping
+ * this as a data result lets the transaction boundary decide whether malformed
+ * input should be rejected or recorded as a terminal operation outcome.
+ *
+ * @param {string} code stable validation code
+ * @param {string} message caller-facing explanation
+ * @return {{code: string, message: string}} validation failure details
  */
 function validationError(
     code,
@@ -3569,8 +3607,13 @@ function validationError(
 
 
 /**
- * Handles invalid receipt while keeping batch identity and accepted quantities
- * consistent with server state.
+ * Shapes a failed receipt-validation result for the receipt processor. The
+ * caller uses this result to produce the operation's conflict/rejection response;
+ * this helper itself does not update a batch or calculate accepted stock.
+ *
+ * @param {string} code receipt validation code
+ * @param {string} message explanation associated with the failure
+ * @return {{valid: boolean, code: string, message: string}} invalid receipt result
  */
 function invalidReceipt(
     code,
@@ -3588,7 +3631,13 @@ function invalidReceipt(
 
 
 /**
- * Handles invalid issue using the server's accepted stock and expiry order.
+ * Shapes a failed issue-validation result consumed by the trusted issue flow.
+ * Availability, expiry order, and allocation checks are performed by the caller;
+ * this helper only preserves their error code and message.
+ *
+ * @param {string} code issue validation code
+ * @param {string} message explanation associated with the failure
+ * @return {{valid: boolean, code: string, message: string}} invalid issue result
  */
 function invalidIssue(
     code,
@@ -3605,8 +3654,13 @@ function invalidIssue(
 }
 
 /**
- * Handles invalid adjustment and checks that the change can be recorded in the
- * stock history.
+ * Packages an adjustment-validation failure for the operation processor. The
+ * adjustment validator performs quantity and batch checks; this helper only
+ * returns a consistent invalid-result shape for the caller to handle.
+ *
+ * @param {string} code adjustment validation code
+ * @param {string} message explanation associated with the failure
+ * @return {{valid: boolean, code: string, message: string}} invalid adjustment result
  */
 function invalidAdjustment(
     code,
@@ -3623,8 +3677,13 @@ function invalidAdjustment(
 }
 
 /**
- * Handles invalid correction and checks that the change can be recorded in the
- * stock history.
+ * Packages a correction-validation failure for the operation processor. The
+ * correction validator performs quantity and batch checks; this helper only
+ * returns a consistent invalid-result shape for the caller to handle.
+ *
+ * @param {string} code correction validation code
+ * @param {string} message explanation associated with the failure
+ * @return {{valid: boolean, code: string, message: string}} invalid correction result
  */
 function invalidCorrection(
     code,
@@ -3642,8 +3701,9 @@ function invalidCorrection(
 
 
 /**
- * Contains the terminal fields step, keeping that decision separate from the HTTP
- * handler or test setup.
+ * Produces the common operation fields written when processing reaches a terminal status. Server
+ * timestamps are assigned here so retries do not copy device clocks into authoritative processing
+ * time; result details remain available for clients reconciling pending local operations.
  */
 function terminalFields(
     status,
@@ -3668,8 +3728,8 @@ function terminalFields(
 
 
 /**
- * Contains the operation result step, keeping that decision separate from the HTTP
- * handler or test setup.
+ * Shapes the processor response returned to the API caller. The processedNow flag distinguishes a
+ * newly written terminal result from an idempotent replay of an operation already finalized.
  */
 function operationResult(
     operationId,
@@ -3696,8 +3756,12 @@ function operationResult(
 
 
 /**
- * Contains the is expired business date step, keeping that decision separate from
- * the HTTP handler or test setup.
+ * Compares an expiry instant with today's date in the configured inventory
+ * business timezone. Comparing calendar-date keys avoids treating stock as
+ * expired partway through its expiry day because of the server's UTC clock.
+ *
+ * @param {number} expiryMillis batch expiry timestamp in milliseconds
+ * @return {boolean} whether the expiry calendar date is before today's business date
  */
 function isExpiredBusinessDate(
     expiryMillis,
@@ -3720,8 +3784,12 @@ function isExpiredBusinessDate(
 
 
 /**
- * Contains the business date key step, keeping that decision separate from the
- * HTTP handler or test setup.
+ * Formats a timestamp as a sortable year-month-day key in the configured
+ * business timezone. This gives expiry validation the same calendar boundary
+ * across devices and backend hosts regardless of their local timezone.
+ *
+ * @param {number} millis timestamp to convert
+ * @return {string} zero-padded business date key
  */
 function businessDateKey(
     millis,

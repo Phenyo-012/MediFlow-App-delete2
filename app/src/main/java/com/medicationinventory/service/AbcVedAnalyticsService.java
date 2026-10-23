@@ -15,11 +15,22 @@ import java.util.Map;
 
 
 /**
- * Applies Abc Ved Analytics Service rules and calculations used by inventory operations or reports.
+ * Builds the ABC, VED, and combined nine-cell distributions used by analytics reports. This class
+ * counts classifications that have already been assigned; it does not derive ABC classes from
+ * usage or VED classes from clinical data. Null records and pairs outside A/B/C plus V/E/D are
+ * omitted from the distributions and included in the invalid-record count.
  */
 public class AbcVedAnalyticsService
 {
 
+    /**
+     * Aggregates valid classification pairs after trimming and case normalization. Each accepted
+     * record increments exactly one ABC total, one VED total, and one matrix cell, keeping the
+     * three views of the same input consistent.
+     *
+     * @param classifications local classification records; {@code null} is treated as empty input
+     * @return report distributions, an initialized nine-cell matrix, and valid/invalid counts
+     */
     public AbcVedAnalytics build(
             List<MedicineClassification> classifications)
     {

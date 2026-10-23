@@ -7,7 +7,9 @@ import android.content.SharedPreferences;
 
 
 /**
- * Handles Inventory Alert Notification Preferences behavior for inventory-related Android notifications.
+ * Stores the master switch and per-type choices in app-private preferences, namespaced by Firebase
+ * UID so one device can retain separate settings for multiple accounts. New keys default to enabled;
+ * the policy layer still denies alert types that the application does not recognize.
  */
 public final class InventoryAlertNotificationPreferences {
 

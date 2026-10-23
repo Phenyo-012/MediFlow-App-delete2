@@ -15,7 +15,7 @@ import java.util.Map;
 
 
 /**
- * Applies Stock Level Report Service business rules used by inventory operations and reports.
+ * Builds one stock-level row per medicine and aggregates those rows for report filters and sorting. Status and reorder quantities come from the shared recommendation service so report calculations align with inventory alert and replenishment rules.
  */
 public class StockLevelReportService
 {
@@ -40,6 +40,13 @@ public class StockLevelReportService
     }
 
 
+    /**
+     * Derives one report row from a medicine and its current batch snapshot.
+     * @param medicine medicine to summarize
+     * @param batches current batches; null is treated as empty
+     * @param nearExpiryWarningDays configured expiry window, which must be non-negative
+     * @return report values including stock status, batch counts, and reorder guidance
+     */
     public StockLevelReportItem buildItem(
             Medicine medicine,
             List<Batch> batches,

@@ -13,7 +13,11 @@ import com.medicationinventory.ui.alerts.AlertsActivity;
 
 
 /**
- * Handles Inventory Notification Publisher behavior for inventory-related Android notifications.
+ * Builds and posts notification previews or alert notifications on the inventory-alert channel.
+ * Alert notifications use an opaque history tag and ID for replacement/cancellation, open the
+ * Alerts screen, and provide a generic public lock-screen version so medicine-specific details are
+ * shown only in the private notification content. Permission denial or a posting-time security
+ * exception is reported as {@code false} to the caller.
  */
 public final class InventoryNotificationPublisher {
 
@@ -59,6 +63,12 @@ public final class InventoryNotificationPublisher {
 
     @SuppressLint("MissingPermission")
 
+    /**
+     * Posts one alert notification when Android permission and owner identifiers are available.
+     * The body is bounded to 200 characters, and the lock-screen public version omits alert details.
+     *
+     * @return {@code true} after posting, or {@code false} when preconditions or platform permission fail
+     */
     public static boolean sendAlert(Context context, String uid, String alertId,
                                     String type, String message) {
         if (!InventoryNotificationPermission.canPost(context)

@@ -40,7 +40,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 
 /**
- * Implements the Barcode Scanner Activity behavior for its Android screen and the application state it presents.
+ * Scans product identifiers with a CameraX preview and ML Kit barcode analyzer, with manual text
+ * entry available when camera access is denied or unavailable. Frame analysis runs on a dedicated
+ * executor and atomic guards prevent concurrent image work or multiple activity results; the chosen
+ * value and detected format are returned to the calling receipt or issue form without changing that
+ * form until its caller accepts the result.
  */
 public final class BarcodeScannerActivity extends AppCompatActivity {
     public static final String EXTRA_SCANNED_VALUE =
@@ -144,6 +148,11 @@ public final class BarcodeScannerActivity extends AppCompatActivity {
         }, ContextCompat.getMainExecutor(this));
     }
 
+    /**
+     * Converts one camera frame to an ML Kit image and scans it off the UI thread. The processing
+     * guard drops overlapping frames; every path closes the ImageProxy and releases that guard so
+     * CameraX can continue delivering frames.
+     */
     @OptIn(markerClass = ExperimentalGetImage.class)
 
     private void analyzeFrame(@NonNull ImageProxy frame) {
@@ -196,6 +205,7 @@ public final class BarcodeScannerActivity extends AppCompatActivity {
     }
 
 
+    /** Returns one validated result to the caller and finishes, ignoring later detections in the same scan session. */
     private void deliver(String code, int format) {
         if (isFinishing() || isDestroyed()) return;
         Intent data = new Intent();

@@ -32,7 +32,12 @@ import java.util.TreeMap;
 
 
 /**
- * Applies Analytics Report Service business rules used by inventory operations and reports.
+ * Builds the dashboard analytics snapshot from local medicine, batch, alert, and transaction
+ * entities. The report combines current catalog and stock summaries with movement trends and top
+ * issued items; it does not query Firestore or independently reconcile pending operations. Inputs
+ * may be absent and are treated as empty collections, while invalid movement windows are rejected.
+ * Date grouping uses the device's system time zone, matching the current implementation's report
+ * semantics.
  */
 public class AnalyticsReportService
 {
@@ -46,6 +51,22 @@ public class AnalyticsReportService
             5;
 
 
+    /**
+     * Aggregates the supplied local snapshot into report cards, distributions, alerts, and movement
+     * summaries. Only active medicines contribute to current catalog and stock totals; historical
+     * transactions are separately constrained by the requested half-open movement interval.
+     *
+     * @param medicineEntities local medicine master rows
+     * @param batchEntities local batch quantities and expiry dates
+     * @param alertEntities locally reconciled alert rows
+     * @param transactionEntities local movement history, including its current provisional state
+     * @param movementWindowDays number of calendar days used for trend buckets; must be positive
+     * @param nowMillis reference instant for current stock and alert calculations
+     * @param movementStartInclusive inclusive lower movement timestamp
+     * @param movementEndExclusive exclusive upper movement timestamp; must exceed the start
+     * @return assembled analytics report
+     * @throws IllegalArgumentException if the movement window or interval is invalid
+     */
     public AnalyticsReport buildReport(
             List<MedicineEntity> medicineEntities,
             List<BatchEntity> batchEntities,

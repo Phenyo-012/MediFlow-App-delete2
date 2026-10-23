@@ -30,7 +30,7 @@ import com.medicationinventory.ui.dashboard.DashboardActivity;
 
 
 /**
- * Implements the Android screen for Login and connects user actions to application state.
+ * Owns the sign-in screen presentation and sends password and TOTP input to LoginViewModel. It renders separate idle, loading, second-factor, success, and error states, and offers device-authenticated offline unlock only when the current Firebase account has an eligible saved enrollment.
  */
 public class LoginActivity extends AppCompatActivity
 {

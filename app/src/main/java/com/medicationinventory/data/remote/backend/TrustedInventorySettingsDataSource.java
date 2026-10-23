@@ -23,7 +23,10 @@ import java.nio.charset.StandardCharsets;
 
 
 /**
- * Calls the trusted backend for Trusted Inventory Settings Data Source operations and translates HTTP outcomes for app callers.
+ * Loads and updates the shared inventory settings through the trusted admin API.
+ * It attaches a Firebase ID token to requests and delivers results on the main
+ * thread, while the backend remains responsible for permission checks and
+ * validation of organization-wide settings.
  */
 public class TrustedInventorySettingsDataSource
 {
@@ -88,6 +91,15 @@ public class TrustedInventorySettingsDataSource
     }
 
 
+    /**
+     * Sends the requested near-expiry warning threshold to the trusted settings
+     * endpoint. Negative values are rejected locally for immediate feedback;
+     * the server still validates the setting and determines whether this caller
+     * may change it. Completion is delivered through the supplied callback.
+     *
+     * @param nearExpiryWarningDays number of days used by inventory warning rules
+     * @param callback receives the persisted setting or a remote/validation error
+     */
     public void setInventorySettings(
             int nearExpiryWarningDays,
             MutationCallback callback)

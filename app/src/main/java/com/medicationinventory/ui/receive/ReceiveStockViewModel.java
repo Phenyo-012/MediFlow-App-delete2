@@ -15,7 +15,11 @@ import com.medicationinventory.validation.ReceiptValidationService;
 
 
 /**
- * Owns observable screen state and user actions for Receive Stock.
+ * Coordinates the receiving form's medicine and batch data with asynchronous receipt submission.
+ * It prevents duplicate submissions while a request is active and translates service callbacks
+ * into distinct validation, duplicate-lot, pending-cloud, and failure states for the activity.
+ * A local save is shown as pending because trusted processing may still reject or conflict with
+ * the operation later.
  */
 public class ReceiveStockViewModel
         extends ViewModel
@@ -63,6 +67,16 @@ public class ReceiveStockViewModel
     }
 
 
+    /**
+     * Submits the form values through {@link ReceiptService}; this method does not write stock
+     * directly. The in-progress guard blocks a second tap until the service reports validation,
+     * duplicate-batch, local persistence, or processing status.
+     *
+     * @param batchNumber lot number for a new batch
+     * @param quantity quantity text retained for service validation
+     * @param receivedDate receipt date in epoch milliseconds
+     * @param expiryDate expiry date in epoch milliseconds
+     */
     public void submitReceipt(String batchNumber, String quantity, long receivedDate,
                               long expiryDate)
     {

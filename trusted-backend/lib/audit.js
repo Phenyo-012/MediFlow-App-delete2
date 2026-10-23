@@ -228,8 +228,13 @@ function inventoryAuditId(
  * @return {string}
  */
 /**
- * Contains the require text step, keeping that decision separate from the HTTP
- * handler or test setup.
+ * Trims a required audit field and rejects non-string or blank values before a
+ * record is written, keeping malformed identifiers and action names out of the
+ * persisted audit entry.
+ *
+ * @param {*} value candidate field value
+ * @param {string} fieldName label included in the validation error
+ * @return {string} trimmed non-empty value
  */
 function requireText(
     value,
@@ -257,8 +262,12 @@ function requireText(
  * @return {string|null}
  */
 /**
- * Contains the optional text step, keeping that decision separate from the HTTP
- * handler or test setup.
+ * Normalizes an optional audit field. Non-string inputs and strings that become
+ * empty after trimming are represented as null, so absent optional values
+ * have one consistent form in the audit document.
+ *
+ * @param {*} value optional field value
+ * @return {string|null} trimmed text or null when absent
  */
 function optionalText(
     value,

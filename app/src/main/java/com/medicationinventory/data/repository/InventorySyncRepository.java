@@ -30,7 +30,7 @@ import java.util.Set;
 
 
 /**
- * Coordinates local and remote Inventory Sync data access for the rest of the application.
+ * Builds uploads from Room operations, allocations, batches, and provisional transactions, then submits them through the Firestore operation source. Queue ownership is checked against the current Firebase UID before worker processing; server outcomes update local operation and retry state, while terminal outcomes are handed to reconciliation.
  */
 public class InventorySyncRepository
 {
@@ -100,6 +100,12 @@ public class InventorySyncRepository
 
 
 
+    /**
+     * Prepares and submits one queued operation on the database executor after validating its local envelope.
+     * Completion is delivered through the callback; authoritative stock changes only after trusted processing and reconciliation.
+     * @param operationId stable local operation identifier
+     * @param callback receives upload acceptance, terminal result, or retryable/permanent failure
+     */
     public void uploadPendingOperation(
             String operationId,
             UploadCallback callback)
@@ -215,6 +221,12 @@ public class InventorySyncRepository
     }
 
 
+    /**
+     * Requeues a permission-denied operation only for the same active owner after the conditional update succeeds.
+     * @param operationId held operation to retry
+     * @param expectedUserId account that initiated the request
+     * @param callback reports whether the queue state was actually changed
+     */
     public void retryHeldPermissionDeniedUpload(
             String operationId,
             String expectedUserId,
@@ -284,6 +296,13 @@ public class InventorySyncRepository
         void onError(String message);
     }
 
+    /**
+     * Loads and validates an operation's Room envelope before creating its trusted-backend DTO.
+     * The current Firebase UID must still match the operation owner, and every allocation must
+     * resolve to a batch belonging to the same medicine. Failures are returned through the
+     * callback; only a valid envelope is submitted, where the server makes the authoritative stock
+     * decision.
+     */
     private void prepareUpload(
             String operationId,
             UploadCallback callback)
@@ -438,6 +457,15 @@ public class InventorySyncRepository
 
 
 
+    /**
+     * Orders local allocations by their persisted order, resolves batch metadata needed by receipt
+     * uploads, and checks the resulting shape before serialization. Uploading receipt batch dates
+     * from the selected local batch keeps an existing-batch top-up tied to that batch's identity.
+     *
+     * @param operation operation whose allocations are being serialized
+     * @param allocations stored allocation rows
+     * @return validated allocation payload in operation order
+     */
     private List<InventoryOperationUploadDto.AllocationDto>
     buildAllocationDtos(
             InventoryOperationEntity operation,

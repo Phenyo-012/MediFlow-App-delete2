@@ -32,7 +32,7 @@ import java.util.List;
 
 
 /**
- * Coordinates local and remote Medicine data access for the rest of the application.
+ * Serves medicine and inventory projections from Room while coordinating shared master and barcode changes with trusted backend sources. Local records support offline browsing and queued inventory work; shared medicine updates are validated and refreshed from the authoritative cloud source before the result is reported.
  */
 public class MedicineRepository
 {
@@ -182,6 +182,14 @@ public class MedicineRepository
         });
     }
 
+    /**
+     * Saves a shared master through the trusted source and refreshes or verifies the Firestore version before accepting an edit.
+     * An edit is rejected when the account changes, the server record is missing/invalid, or its sync version is stale;
+     * these checks prevent this client from overwriting a newer cloud master.
+     * @param medicine proposed medicine values
+     * @param editing true when this is an update to an existing shared master
+     * @param callback reports rejection, commit, and any subsequent refresh outcome
+     */
     public void saveSharedMedicine(Medicine medicine, boolean editing,
                                    SharedMedicineSaveCallback callback) {
         if (callback == null) throw new IllegalArgumentException("Callback required.");
@@ -486,6 +494,10 @@ public class MedicineRepository
     }
 
 
+    /**
+     * Saves a barcode mapping for a medicine after applying the identifier policy and trusted backend authorization.
+     * Existing mapping identity and account state are checked before local cache updates.
+     */
     public void linkBarcode(String medicineId, String rawCode, OperationCallback callback) {
         mutateBarcode(medicineId, rawCode, true, callback);
     }

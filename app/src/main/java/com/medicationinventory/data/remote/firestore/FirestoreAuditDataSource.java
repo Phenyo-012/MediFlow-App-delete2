@@ -19,7 +19,11 @@ import java.util.Map;
 
 
 /**
- * Reads or writes Firestore Audit Data Source data in Firestore and translates asynchronous results for app callers.
+ * Reads recent audit records from the Firestore {@code auditLogs} collection and
+ * maps documents to {@link com.medicationinventory.model.dto.AuditRemoteRecord}
+ * values. The query is explicitly server-sourced and ordered newest first, so a
+ * successful callback represents a fresh remote read rather than a cached local
+ * audit view.
  */
 public class FirestoreAuditDataSource
 {
@@ -43,6 +47,15 @@ public class FirestoreAuditDataSource
     }
 
 
+    /**
+     * Reads the newest audit documents from the server and converts each
+     * document into an {@link com.medicationinventory.model.dto.AuditRemoteRecord}.
+     * Non-positive limits use the adapter's default cap, and mapping failures
+     * are reported through the callback rather than returning partial records.
+     *
+     * @param limit maximum number of newest records to request; non-positive uses the default
+     * @param callback receives the complete mapped list or a query/mapping failure
+     */
     public void loadRecent(
             int limit,
             Callback callback)

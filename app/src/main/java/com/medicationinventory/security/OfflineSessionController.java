@@ -19,7 +19,7 @@ import java.lang.ref.WeakReference;
 
 
 /**
- * Enforces Offline Session Controller rules that protect account access and locally cached data.
+ * Coordinates the in-memory unlocked account with the encrypted offline enrollment and application lifecycle. It accepts access only for the current Firebase UID, starts the inactivity window after validation or device unlock, and routes expired or invalid sessions back to login. The controller does not replace server authorization for cloud operations.
  */
 public final class OfflineSessionController implements Application.ActivityLifecycleCallbacks {
     public static final long BACKGROUND_LOCK_MS = 15L * 60L * 1000L;
@@ -42,6 +42,7 @@ public final class OfflineSessionController implements Application.ActivityLifec
     }
 
 
+    /** Reports whether this UID matches Firebase and has a valid encrypted offline enrollment. */
     public boolean mayUnlock(String uid) {
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         return firebaseUser != null && uid != null && uid.equals(firebaseUser.getUid())
@@ -68,6 +69,7 @@ public final class OfflineSessionController implements Application.ActivityLifec
     }
 
 
+    /** Refreshes the enrollment timestamp after an active profile has been confirmed by the server. */
     public synchronized boolean onServerRevalidation(UserProfile profile) {
         if (!validOnlineProfile(profile) || !store.enroll(profile.getUid(), profile.getLastValidatedAt())) {
             return false;
@@ -100,6 +102,7 @@ public final class OfflineSessionController implements Application.ActivityLifec
         return true;
     }
 
+    /** Rechecks both in-memory state and enrollment eligibility, locking immediately if either check fails. */
     public synchronized boolean isUnlocked() {
         if (unlockedUid == null || !mayUnlock(unlockedUid)) {
             lock();
@@ -109,6 +112,7 @@ public final class OfflineSessionController implements Application.ActivityLifec
     }
 
 
+    /** Ends the in-memory unlock and cancels its scheduled inactivity callback without deleting enrollment. */
     public synchronized void lock() {
         unlockedUid = null;
         lastInteractionElapsed = -1L;
@@ -116,6 +120,7 @@ public final class OfflineSessionController implements Application.ActivityLifec
     }
 
 
+    /** Locks the current session and removes the encrypted enrollment during explicit sign-out. */
     public synchronized void clearOnSignOut() {
         lock();
         store.clear();
@@ -192,6 +197,7 @@ public final class OfflineSessionController implements Application.ActivityLifec
     }
 
 
+    /** Routes protected screens to LoginActivity when the session is locked, inactive, or bound to another UID. */
     private void enforce(Activity activity) {
         if (isLogin(activity) || activity.isFinishing()) return;
         lockIfInactive();
@@ -224,6 +230,7 @@ public final class OfflineSessionController implements Application.ActivityLifec
         enforce(activity);
     }
 
+    /** Applies the background lock when the first activity returns after the configured interval. */
     @Override public void onActivityStarted(Activity activity) {
         if (visibleActivities == 0 && lastBackgroundElapsed >= 0
                 && SystemClock.elapsedRealtime() - lastBackgroundElapsed >= BACKGROUND_LOCK_MS) {
@@ -233,6 +240,7 @@ public final class OfflineSessionController implements Application.ActivityLifec
         enforce(activity);
     }
 
+    /** Tracks the foreground screen, enforces access, and starts input/inactivity monitoring. */
     @Override public void onActivityResumed(Activity activity) {
         if (!isLogin(activity)) {
             resumedActivity = new WeakReference<>(activity);

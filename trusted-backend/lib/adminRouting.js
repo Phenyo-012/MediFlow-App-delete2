@@ -46,8 +46,10 @@ const DYNAMIC_IDS = Object.freeze({
  * @return {*} Result of the selected handler or the error response.
  */
 /**
- * Contains the dispatch admin request step, keeping that decision separate from
- * the HTTP handler or test setup.
+ * Rejects unknown rewrite selectors, validates a route's dynamic ID segment, and
+ * dispatches only to the handler registered for the allow-listed route. This
+ * router is a mapping layer rather than a security check: the selected handler
+ * still authenticates and authorizes the request.
  */
 function dispatchAdminRequest(request, response, handlers) {
   const query = request && request.query;

@@ -11,7 +11,7 @@ import com.medicationinventory.data.local.entity.InventorySettingsEntity;
 
 
 /**
- * Declares Room queries and updates for Inventory Settings records used by local repositories.
+ * Stores the single inventory settings record and exposes it as observable or synchronous data. Repository code supplies defaults when no row exists and handles remote refresh and trusted mutations.
  */
 @Dao
 public interface InventorySettingsDao

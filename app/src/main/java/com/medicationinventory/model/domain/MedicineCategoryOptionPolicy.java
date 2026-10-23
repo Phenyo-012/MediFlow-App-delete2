@@ -10,7 +10,10 @@ import java.util.Map;
 
 
 /**
- * Represents Medicine Category Option Policy data used by inventory rules and application workflows.
+ * Builds a stable category menu from the built-in catalog and categories seen
+ * locally or on the server. It keeps the current medicine's legacy category
+ * selectable, removes duplicates without regard to case, and appends the custom
+ * category option after sorted dynamic values.
  */
 public final class MedicineCategoryOptionPolicy {
 

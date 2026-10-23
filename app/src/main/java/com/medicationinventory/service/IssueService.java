@@ -30,7 +30,7 @@ import java.util.UUID;
 
 
 /**
- * Applies Issue Service rules and calculations used by inventory operations or reports.
+ * Coordinates stock issue requests after the screen has prepared batch selections. It revalidates the draft, current Firebase account, active user profile, permissions, and current batch availability before atomically saving an operation, allocations, provisional movements, and sync work. Cloud confirmation is asynchronous; local persistence does not make the issue authoritative.
  */
 public class IssueService
 {
@@ -198,6 +198,11 @@ public class IssueService
     }
 
 
+    /**
+     * Reports whether the current active user may create FEFO override issues.
+     * This UI check is informational; the permission is rechecked during commit before local persistence.
+     * @param callback receives true only when the current profile grants the override permission
+     */
     public void checkOverridePermission(
             OverridePermissionCallback callback)
     {

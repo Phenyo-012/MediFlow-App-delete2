@@ -153,8 +153,12 @@ module.exports = async function handler(
  * @return {string|undefined} Target user UID.
  */
 /**
- * Contains the route user ID step, keeping that decision separate from the HTTP
- * handler or test setup.
+ * Reads the rewritten route's UID query value, accepting the first value when
+ * Vercel represents a repeated query parameter as an array. Required-value
+ * validation is performed by the endpoint after extraction.
+ *
+ * @param {Object} request incoming user-detail request
+ * @return {*} raw route UID value, or undefined when absent
  */
 function routeUid(
     request,
@@ -304,8 +308,13 @@ function parseRequestBody(
  * @return {boolean} Requested active state.
  */
 /**
- * Contains the require active state step, keeping that decision separate from the
- * HTTP handler or test setup.
+ * Requires the account-state payload to contain a boolean isActive;
+ * strings and omitted values are not coerced, preventing ambiguous enable/disable
+ * requests from reaching the administrator service.
+ *
+ * @param {Object} body parsed request body
+ * @return {boolean} requested active state
+ * @throws {UserAdminHttpError} when isActive is not a boolean
  */
 function requireActiveState(
     body,
@@ -335,8 +344,13 @@ function requireActiveState(
  * @return {*} HTTP response.
  */
 /**
- * Contains the handle error step, keeping that decision separate from the HTTP
- * handler or test setup.
+ * Converts expected authentication and user-admin failures to stable API
+ * responses, while unexpected failures follow the endpoint's generic server
+ * error path. The response does not expose raw Firebase or internal details.
+ *
+ * @param {Error} error failure raised while processing the user request
+ * @param {Object} response Vercel response object
+ * @return {*} JSON error response
  */
 function handleError(
     error,

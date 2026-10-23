@@ -29,6 +29,14 @@ const MAX_ANDROID_INT =
   2147483647;
 
 
+/**
+ * Creates the trusted settings mutation with injectable authorization, audit, and timestamp
+ * providers for tests. The production endpoint uses server authorization and Firestore's
+ * serverTimestamp; clients cannot supply those values.
+ *
+ * @param {object} overrides optional dependency providers
+ * @return {{setInventorySettings: Function}} settings mutation API
+ */
 function createInventorySettingsAdminService(
     overrides = {},
 ) {
@@ -49,8 +57,14 @@ function createInventorySettingsAdminService(
 
 
   /**
-   * Validates the warning window, then updates the current value and legacy spelling
-   * together with an audit record in the same Firestore transaction.
+   * Requires MANAGE_SETTINGS, validates the warning-day value, and writes the canonical setting
+   * with actor/server timestamp metadata. The transaction also removes the legacy misspelled field
+   * when present and writes an audit record atomically; a no-op canonical value returns unchanged
+   * unless legacy data still needs cleanup.
+   *
+   * @param {string} authenticatedUid verified actor UID
+   * @param {number} nearExpiryWarningDays accepted warning window
+   * @return {Promise<object>} setting ID, changed/created flags, and canonical value
    */
   async function setInventorySettings(
       authenticatedUid,

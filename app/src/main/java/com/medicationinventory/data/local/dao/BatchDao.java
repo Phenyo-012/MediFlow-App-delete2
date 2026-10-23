@@ -11,7 +11,7 @@ import java.util.List;
 
 
 /**
- * Declares Room queries and updates for Batch records used by local repositories.
+ * Reads and updates medicine batches for inventory screens, FEFO selection, alerts, and reorder calculations. Expiry queries use the supplied business-day boundary, while local stock commits are coordinated by StockOperationDao.
  */
 @Dao
 public interface BatchDao

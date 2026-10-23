@@ -8,7 +8,11 @@ import java.time.YearMonth;
 
 
 /**
- * Parses supported GS1 scan formats into GTIN, lot, and expiry values, rejecting malformed or unsupported fields.
+ * Parses the GS1 subset used by stock receiving: GTIN (01), expiry (17), and lot (10). It accepts
+ * scanner-prefixed, parenthesized, and supported raw element strings, validates the GTIN check
+ * digit and expiry date, and rejects duplicate or unknown fields instead of returning partial
+ * product data. A valid scan may omit lot or expiry; callers decide whether their workflow
+ * requires those values.
  */
 public final class Gs1ScanParser {
     private static final char GS = 29;
@@ -30,6 +34,16 @@ public final class Gs1ScanParser {
     }
 
 
+    /**
+     * Parses a recognized GS1 payload. Unrecognized scanner text returns {@code null}; once the
+     * input is identified as GS1, malformed or unsupported fields raise
+     * {@link IllegalArgumentException} so callers can report invalid structured data. Missing lot
+     * and expiry fields remain absent for the receiving workflow to validate if required.
+     *
+     * @param raw scanner text, optionally including a symbology prefix
+     * @return GTIN and any supplied lot and expiry values
+     * @throws IllegalArgumentException when a recognized GS1 element string is malformed
+     */
     public static Data parse(String raw) {
         if (raw == null) return null;
         String value = raw.trim();
@@ -102,6 +116,7 @@ public final class Gs1ScanParser {
         return new Data(gtin, lot, expiry);
     }
 
+    /** Interprets YYMMDD using the GS1 month-end convention when the day is {@code 00}. */
     private static LocalDate parseExpiry(String code) {
         int year = 2000 + Integer.parseInt(code.substring(0, 2));
         int month = Integer.parseInt(code.substring(2, 4));
@@ -131,6 +146,7 @@ public final class Gs1ScanParser {
         return true;
     }
 
+    /** Applies the weighted modulo-10 check-digit rule to a 14-digit GTIN. */
     public static boolean validGtinCheckDigit(String code) {
         if (code == null || code.length() != 14 || !digits(code)) return false;
         int sum = 0;

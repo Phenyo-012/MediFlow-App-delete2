@@ -8,7 +8,9 @@ import androidx.room.PrimaryKey;
 
 
 /**
- * Persists the local Medicine Barcode record used by offline inventory workflows.
+ * Local barcode-to-medicine lookup used by scanner workflows. The barcode is the primary key, the
+ * medicine ID is protected by a Room foreign key, and creation time is retained for local history;
+ * cloud-shared mapping changes are sent through the trusted barcode service.
  */
 @Entity(tableName = "medicine_barcodes",
         foreignKeys = @ForeignKey(entity = MedicineEntity.class,

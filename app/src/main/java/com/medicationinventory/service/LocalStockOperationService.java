@@ -13,7 +13,11 @@ import java.util.List;
 
 
 /**
- * Applies Local Stock Operation Service business rules used by inventory operations and reports.
+ * Runs local inventory commits away from the UI thread and returns their outcome on the main
+ * thread. Each DAO call writes an operation together with its allocation and transaction records
+ * plus the queue row that makes it eligible for trusted-backend processing. The DAO owns the Room
+ * transaction and rechecks stock constraints; this service is the asynchronous boundary used by
+ * inventory workflows and does not treat a local commit as cloud confirmation.
  */
 public class LocalStockOperationService
 {
@@ -170,6 +174,11 @@ public class LocalStockOperationService
                 });
     }
 
+    /**
+     * Stores an adjustment and its audit transaction as pending local work. The DAO applies the
+     * change atomically with the batch quantity and sync queue entry; a database failure is
+     * delivered through {@code callback.onError} on the main thread.
+     */
     public void commitAdjustment(
             InventoryOperationEntity operation,
             OperationAllocationEntity allocation,
@@ -211,6 +220,11 @@ public class LocalStockOperationService
                 });
     }
 
+    /**
+     * Persists a compensating correction against its referenced stock operation. The local DAO
+     * checks the relationship to the original confirmed operation before changing the batch, and
+     * the new operation remains queued for trusted processing.
+     */
     public void commitCorrection(
             InventoryOperationEntity operation,
             OperationAllocationEntity allocation,
@@ -253,6 +267,7 @@ public class LocalStockOperationService
     }
 
 
+    /** Receives the result of a background Room commit on the main thread. */
     public interface CommitCallback
     {
         void onSuccess();

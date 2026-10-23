@@ -7,6 +7,11 @@ import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
 
+/**
+ * Associates one inventory operation with a batch and the quantity assigned to it. Allocation order
+ * preserves the device's proposed FEFO sequence for upload and review; the trusted processor still
+ * checks that sequence against current server stock before confirming an issue.
+ */
 @Entity(tableName = "operation_allocations",
 
         foreignKeys = {
@@ -27,9 +32,6 @@ import androidx.room.PrimaryKey;
                 )
         },
 
-/**
- * Persists the local Operation Allocation record used by offline inventory workflows.
- */
         indices =
                 {
                         @Index(value = "operationId"), @Index(value = "batchId")

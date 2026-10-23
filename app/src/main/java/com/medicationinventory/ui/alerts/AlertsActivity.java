@@ -53,7 +53,11 @@ import java.util.List;
 
 
 /**
- * Implements the Alerts Activity behavior for its Android screen and the application state it presents.
+ * Renders permission-gated alert rows, type filters, acknowledgement actions, and navigation. The
+ * ViewModel supplies locally reconciled alerts, while this activity separately manages the user's
+ * device-notification preferences and Android runtime permission. It requests notification
+ * permission only after an explicit enable action and shows a generic test preview after the
+ * platform reports that posting is available.
  */
 public class AlertsActivity
         extends AppCompatActivity
@@ -529,6 +533,7 @@ public class AlertsActivity
         notificationNudge.show();
     }
 
+    /** Requests Android's runtime permission only from the user's explicit enable action, then offers a preview or settings route. */
     private void enableDeviceNotifications() {
         nudgeDismissedThisVisit = true;
         dismissNotificationNudge();

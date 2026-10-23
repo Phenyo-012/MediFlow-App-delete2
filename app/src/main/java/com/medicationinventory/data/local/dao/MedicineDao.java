@@ -11,7 +11,7 @@ import com.medicationinventory.data.local.projection.MedicineStockProjection;
 import java.util.List;
 
 /**
- * Declares Room queries and updates for Medicine records used by local repositories.
+ * Stores medicine master rows and exposes active lists, categories, report inputs, and the inventory stock projection. Deactivation retains the master row for historical references while excluding it from active screens and calculations.
  */
 @Dao
 public interface MedicineDao

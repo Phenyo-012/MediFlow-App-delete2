@@ -3,7 +3,8 @@ package com.medicationinventory.model.enums;
 
 
 /**
- * Defines supported User Role values shared by inventory and authorization workflows.
+ * Application role identifiers and display labels used in profile mapping and user administration. The role
+ * label alone does not replace the profile's explicit permissions or trusted backend authorization.
  */
 public enum UserRole
 {

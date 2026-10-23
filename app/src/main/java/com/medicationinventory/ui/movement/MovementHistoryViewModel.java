@@ -18,7 +18,10 @@ import java.util.List;
 import java.util.ArrayList;
 
 /**
- * Owns observable screen state and user actions for Movement History.
+ * Builds a permission-aware movement history for one medicine, with selectable batch and
+ * transaction-type filters, an inclusive date range, and incremental local paging. It switches
+ * Room sources when filter state changes and exposes whether history can be viewed separately from
+ * the rows, allowing the activity to avoid presenting a denied query as an empty ledger.
  */
 public class MovementHistoryViewModel
         extends ViewModel

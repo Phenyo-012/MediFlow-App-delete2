@@ -16,7 +16,7 @@ import com.medicationinventory.model.enums.InventoryOperationStatus;
 import java.util.List;
 
 /**
- * Declares Room queries and updates for Inventory Operation records used by local repositories.
+ * Stores operation identity and processing state and projects per-user synchronization summaries. Operation ownership in these queries scopes UI data; worker authorization is separately rechecked against Firebase identity.
  */
 @Dao
 @TypeConverters(InventoryOperationConverter.class)

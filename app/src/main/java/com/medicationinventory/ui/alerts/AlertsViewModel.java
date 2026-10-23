@@ -23,7 +23,10 @@ import java.util.List;
 
 
 /**
- * Owns observable screen state and user actions for Alerts.
+ * Streams the alert list for the current account, applies the selected type filter in memory, and
+ * routes acknowledgements through the alert repository. The screen state keeps permission/profile
+ * information separate from alert rows; acknowledgements are guarded against duplicate requests
+ * and reported through a one-shot action state.
  */
 public class AlertsViewModel
         extends ViewModel

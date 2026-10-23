@@ -19,8 +19,13 @@ const {
 
 
 /**
- * Contains the required environment variable step, keeping that decision separate
- * from the HTTP handler or test setup.
+ * Reads a required Firebase Admin credential from the server environment. Keeping this check at
+ * initialization gives missing deployment configuration a clear failure before privileged work
+ * begins; the value is never returned in an HTTP response or logged by this helper.
+ *
+ * @param {string} name environment variable name
+ * @return {string} non-empty configured value
+ * @throws {Error} when the variable is absent or blank
  */
 function requiredEnvironmentVariable(name) {
   const value =
@@ -38,8 +43,11 @@ function requiredEnvironmentVariable(name) {
 
 
 /**
- * Looks up get firebase admin app from trusted state and returns the result in the
- * format the caller expects.
+ * Reuses the process-wide Admin app when one exists; otherwise it initializes one from server-only
+ * project and service-account credentials. The escaped-newline conversion supports private keys
+ * supplied through environment variables without placing credentials in the client application.
+ *
+ * @return {import('firebase-admin/app').App} initialized Firebase Admin app
  */
 function getFirebaseAdminApp() {
   const existingApps =
@@ -81,10 +89,7 @@ function getFirebaseAdminApp() {
 }
 
 
-/**
- * Looks up get admin firestore from trusted state and returns the result in the
- * format the caller expects.
- */
+/** Returns Firestore bound to the shared Admin app for trusted server-side reads and writes. */
 function getAdminFirestore() {
   const app =
     getFirebaseAdminApp();
@@ -93,10 +98,7 @@ function getAdminFirestore() {
 }
 
 
-/**
- * Looks up get admin auth from trusted state and returns the result in the format
- * the caller expects.
- */
+/** Returns Firebase Admin Auth for ID-token verification and account administration. */
 function getAdminAuth() {
   const app =
     getFirebaseAdminApp();

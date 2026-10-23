@@ -95,7 +95,7 @@ import com.medicationinventory.security.RestrictedClassificationAccessGate;
 
 
 /**
- * Provides App Container behavior used by the MediFlow application.
+ * Acts as the application composition root: creates the Room database and executors, then wires data sources, repositories, domain services, sync coordinators, schedulers, and security guards around those shared instances. This keeps Activities and ViewModels dependent on application-level services rather than constructing persistence or Firebase clients themselves. Construction also starts long-lived observers needed for settings, alerts, account security, and cloud synchronization.
  */
 public class AppContainer
 {
@@ -163,6 +163,11 @@ public class AppContainer
     private final TrustedInventorySettingsDataSource trustedInventorySettingsDataSource;
     private final TrustedMedicineMasterDataSource trustedMedicineMasterDataSource;
 
+    /**
+     * Builds the shared dependency graph from the application context.
+     * Database access uses the application-scoped Room singleton; Firebase and trusted backend sources are then injected into repositories and workflows.
+     * @param context application context used for persistent and device-scoped services
+     */
     public AppContainer(Context context)
     {
         appDatabase = AppDatabase.getInstance(context.getApplicationContext());

@@ -56,6 +56,13 @@ public class AlertRefreshService
 
 
 
+    /**
+     * Recomputes one medicine alert set from current settings and reconciles it with stored alerts.
+     * Inactive medicines use an empty set so stale alerts can be closed.
+     * @param medicine medicine to refresh; required
+     * @param batches latest batches, or null when none are available
+     * @throws IllegalArgumentException when medicine is null
+     */
     public void refreshMedicineAlertsBlocking(
             Medicine medicine,
             List<Batch> batches)

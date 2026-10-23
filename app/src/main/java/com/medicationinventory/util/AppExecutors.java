@@ -11,7 +11,11 @@ import java.util.concurrent.ExecutorService;
 
 
 /**
- * Provides App Executors behavior used by the MediFlow application.
+ * Centralizes the executors used to keep Room work off the main thread and
+ * deliver repository results back to Android UI observers. The default database
+ * executor is single-threaded, which also gives queued database tasks a stable
+ * execution order; the public constructor allows tests or composition code to
+ * supply controlled executors.
  */
 public final class AppExecutors
 {

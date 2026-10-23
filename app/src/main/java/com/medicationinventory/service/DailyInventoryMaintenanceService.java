@@ -6,7 +6,10 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 
 /**
- * Applies Daily Inventory Maintenance Service business rules used by inventory operations and reports.
+ * Runs the daily local maintenance pass for batch expiry and inventory alerts. Expiry is evaluated
+ * against the South African business date; afterward, the alert observer rebuilds its derived
+ * records from the updated local inventory. Scheduling is handled by the worker layer, and this
+ * service does not itself upload those records to Firestore.
  */
 public class DailyInventoryMaintenanceService
 {
@@ -50,6 +53,11 @@ public class DailyInventoryMaintenanceService
     }
 
 
+    /**
+     * Marks batches expired before today's business-day boundary, then refreshes all observed
+     * alerts. The DAO update precedes alert evaluation so the derived alerts see the new batch
+     * status; failures propagate to the scheduled caller for retry or failure reporting.
+     */
     public void runNowBlocking()
     {
         long todayStartMillis =

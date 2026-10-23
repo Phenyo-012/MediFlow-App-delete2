@@ -3,7 +3,7 @@ package com.medicationinventory.model.enums;
 
 
 /**
- * Defines supported Alert Status values shared by inventory and authorization workflows.
+ * Lifecycle state of a persisted alert: active, acknowledged by a user, or resolved after its condition clears.
  */
 public enum AlertStatus
 {

@@ -12,7 +12,10 @@ import androidx.room.PrimaryKey;
 
 
 /**
- * Persists the local Medicine record used by offline inventory workflows.
+ * Room cache of the shared medicine master record used by inventory screens and batch relationships.
+ * It stores the stable medicine ID, human-entered code and names, category, stock thresholds, and
+ * active state. The unique medicine-code index prevents conflicting local catalog entries; shared
+ * edits are still submitted through the trusted medicine backend.
  */
 @Entity(
         tableName = "medicines",

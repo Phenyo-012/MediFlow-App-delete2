@@ -17,7 +17,7 @@ import java.util.List;
 
 
 /**
- * Owns observable screen state and user actions for Create User.
+ * Loads role and permission options from AdminUserRepository, validates the proposed account fields, and submits creation requests to the trusted backend. Its state keeps catalog loading and mutation results separate so a failed request can be shown without implying that a user account was created.
  */
 public class CreateUserViewModel
         extends ViewModel
@@ -178,6 +178,10 @@ public class CreateUserViewModel
     }
 
 
+    /**
+     * Validates the form and forwards a requested account creation to the trusted admin source.
+     * Firebase account creation and profile persistence happen remotely; success is emitted only from the backend callback.
+     */
     public void createUser(
             String firstName,
             String lastName,

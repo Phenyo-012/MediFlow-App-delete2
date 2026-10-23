@@ -22,7 +22,12 @@ import java.util.concurrent.TimeUnit;
 
 
 /**
- * Handles Inventory Alert Notification Worker behavior for inventory-related Android notifications.
+ * Dispatches locally reconciled active alerts as private Android notifications. Before reading Room,
+ * the worker checks the signed-in Firebase UID, the user's master notification preference, Android
+ * notification permission, and a server-fetched active profile with {@code VIEW_ALERTS}. It then
+ * cancels deliveries for resolved alerts, applies per-type preferences and one-time delivery
+ * history, and caps a run to avoid flooding the notification shade. Profile/network failures are
+ * retried up to the configured attempt limit; account changes stop the current user's dispatch.
  */
 public final class InventoryAlertNotificationWorker extends Worker {
 
@@ -34,6 +39,13 @@ public final class InventoryAlertNotificationWorker extends Worker {
         super(context, params);
     }
 
+    /**
+     * Performs one notification pass. A signed-out user cancels the prior owner's visible history;
+     * a changed UID is checked again after the server profile fetch and during dispatch so a run
+     * cannot continue sending under the account that was previously active.
+     *
+     * @return WorkManager success, retry, or failure according to the operation stage
+     */
     @NonNull
     @Override
 
@@ -135,6 +147,10 @@ public final class InventoryAlertNotificationWorker extends Worker {
     }
 
 
+    /**
+     * Applies the same active-profile, UID-consistency, and VIEW_ALERTS policy to the server
+     * document that gates access to the alert list. Cached Android permissions are not used here.
+     */
     private static boolean hasCurrentAlertAccess(DocumentSnapshot snapshot, String uid) {
         if (snapshot == null || !snapshot.exists()) return false;
         return InventoryAlertNotificationPolicy.isAuthorized(

@@ -3,7 +3,10 @@ package com.medicationinventory.model.domain;
 
 
 /**
- * Represents Reorder Recommendation data used by inventory rules and application workflows.
+ * Result of the local reorder policy for one medicine. It carries usable and
+ * near-expiry quantities alongside the configured reorder and target levels,
+ * plus the policy's recommended quantity; it is guidance for the user and does
+ * not itself create a purchase order or stock operation.
  */
 public class ReorderRecommendation
 {

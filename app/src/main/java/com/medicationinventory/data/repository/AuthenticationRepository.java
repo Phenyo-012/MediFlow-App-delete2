@@ -36,6 +36,13 @@ public class AuthenticationRepository {
         return authDataSource.getCurrentUserId();
     }
 
+    /**
+     * Authenticates with Firebase, then refreshes and validates the matching active MediFlow profile.
+     * When Firebase requires TOTP, the resolver is passed to the callback and profile loading waits for completion.
+     * @param email account email; surrounding whitespace is trimmed before authentication
+     * @param password Firebase password
+     * @param callback receives success, MFA-required, inactive, unauthenticated, or error outcomes
+     */
     public void signIn(String email, String password, AuthenticationCallback callback)
     {
         if (email == null || email.trim().isEmpty())
@@ -77,6 +84,12 @@ public class AuthenticationRepository {
     }
 
 
+    /**
+     * Completes a pending Firebase TOTP challenge and loads the profile only after Firebase accepts the code.
+     * @param resolver Firebase resolver returned by the initial password sign-in
+     * @param code six-digit authenticator code
+     * @param callback receives the validated profile or the failure outcome
+     */
     public void completeTotpSignIn(MultiFactorResolver resolver, String code,
                                    AuthenticationCallback callback)
     {
@@ -92,6 +105,11 @@ public class AuthenticationRepository {
     }
 
 
+    /**
+     * Revalidates the current Firebase identity against its server profile after app start or session restoration.
+     * No profile request is made when Firebase has no current UID.
+     * @param callback receives an active profile or the relevant signed-out, inactive, or error result
+     */
     public void refreshCurrentUser(AuthenticationCallback callback)
     {
         String uid = authDataSource.getCurrentUserId();
@@ -147,6 +165,11 @@ public class AuthenticationRepository {
         );
     }
 
+    /**
+     * Signs out and locks local access only if the supplied, previously verified UID is still current.
+     * @param verifiedUid UID associated with the profile or revocation event
+     * @return true when this call revoked the matching current session
+     */
     public boolean revokeIfCurrentUser(String verifiedUid) {
         if (verifiedUid == null || !verifiedUid.equals(authDataSource.getCurrentUserId())) {
             return false;
@@ -156,6 +179,7 @@ public class AuthenticationRepository {
         return true;
     }
 
+    /** Clears saved offline enrollment, Firebase identity, and the local cached profile for the signed-in UID. */
     public void signOut()
     {
         String uid = authDataSource.getCurrentUserId();

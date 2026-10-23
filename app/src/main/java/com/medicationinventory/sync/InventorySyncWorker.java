@@ -28,7 +28,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 
 /**
- * Coordinates Inventory Sync Worker work between the local database and shared cloud state.
+ * Drains due operation IDs from the local queue, verifies the signed-in owner before each network phase, submits operation payloads, asks the trusted processor for authoritative results, and reconciles terminal outcomes into Room. Temporary failures receive delayed retries; permanent validation or permission failures remain visible for attention or owner-requested retry. Account changes and reconciliation failures are handled without marking unconfirmed stock as synced.
  */
 public class InventorySyncWorker
         extends Worker
@@ -519,6 +519,16 @@ public class InventorySyncWorker
     }
 
 
+    /**
+     * Confirms that this worker is still running for the UID whose queue it
+     * captured. Checking both WorkManager cancellation and the current Firebase
+     * UID prevents delayed callbacks from a previous account from updating its
+     * sync state.
+     *
+     * @param repository sync repository used to read the current session UID
+     * @param uid UID captured when this worker began
+     * @return whether the worker may continue acting for that account
+     */
     private boolean isSameSession(
             InventorySyncRepository repository, String uid)
     {
@@ -528,6 +538,17 @@ public class InventorySyncWorker
     }
 
 
+    /**
+     * Adapts the repository's asynchronous upload callback to the worker's
+     * synchronous control flow. A successful callback distinguishes mere
+     * submission from an already-known terminal remote state; timeout,
+     * interruption, and missing callback results remain failures so an upload is
+     * never mistaken for processor confirmation.
+     *
+     * @param syncRepository owner-scoped inventory sync repository
+     * @param operationId stable ID of the queued operation
+     * @return submitted, terminal, or error outcome for the caller's next phase
+     */
     private UploadOutcome uploadAndWait(
             InventorySyncRepository syncRepository,
             String operationId
@@ -640,6 +661,16 @@ public class InventorySyncWorker
     }
 
 
+    /**
+     * Waits for trusted server processing after upload. The callback supplies the
+     * backend's terminal result; a timeout or interruption is wrapped as a
+     * retryable processor failure so local stock remains pending until the
+     * reconciliation path confirms the authoritative outcome.
+     *
+     * @param dataSource authenticated trusted processor client
+     * @param operationId operation to process on the backend
+     * @return terminal processor result or a classified processing failure
+     */
     private ProcessorOutcome processAndWait(
             TrustedInventoryProcessorDataSource dataSource,
             String operationId
@@ -969,6 +1000,20 @@ public class InventorySyncWorker
                 .getErrorCode();
     }
 
+    /**
+     * Fetches the server's reconciliation snapshot and applies it to Room only
+     * if the worker still belongs to the same signed-in user. This second UID
+     * check is necessary because the network callback may arrive after an account
+     * switch; local reconciliation errors are kept distinct from remote lookup
+     * failures so retry policy can respond appropriately.
+     *
+     * @param dataSource trusted endpoint client for terminal operation results
+     * @param repository applies the result to the local inventory ledger
+     * @param syncRepository checks that the original account is still active
+     * @param operationId stable ID to reconcile
+     * @param workerUid UID captured by the worker
+     * @return success, account-change, local-apply, or remote-fetch outcome
+     */
     private ReconciliationOutcome reconcileAndWait(
             TrustedInventoryReconciliationDataSource dataSource,
             InventoryReconciliationRepository repository,

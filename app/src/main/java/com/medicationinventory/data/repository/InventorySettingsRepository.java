@@ -22,7 +22,7 @@ import com.medicationinventory.util.AppExecutors;
 
 
 /**
- * Coordinates local and remote Inventory Settings data access for the rest of the application.
+ * Exposes cached inventory settings to app services and refreshes them from Firestore. Setting changes go through the trusted mutation source, then refresh the authoritative settings snapshot; a committed change followed by a failed refresh is surfaced separately from a rejected mutation.
  */
 public class InventorySettingsRepository
 {
@@ -99,6 +99,7 @@ public class InventorySettingsRepository
     }
 
 
+    /** Observes Room settings and supplies application defaults until the settings row has been loaded. */
     public LiveData<InventorySettings>
     observeInventorySettings()
     {
@@ -125,6 +126,7 @@ public class InventorySettingsRepository
     }
 
 
+    /** Loads the Firestore settings snapshot, persists it to Room, and reports remote or local-write failures. */
     public void refreshFromServer(
             SettingsCallback callback)
     {
@@ -295,6 +297,10 @@ public class InventorySettingsRepository
                 : settings;
     }
 
+    /**
+     * Starts one Firestore listener for settings and writes received snapshots into Room.
+     * Call stopLiveSync when the owning application scope no longer needs live updates.
+     */
     public synchronized void startLiveSync(
             SettingsCallback callback)
     {
@@ -349,6 +355,7 @@ public class InventorySettingsRepository
                         );
     }
 
+    /** Removes the active Firestore listener, if present. */
     public synchronized void stopLiveSync()
     {
         if (liveSettingsRegistration == null)
@@ -363,6 +370,10 @@ public class InventorySettingsRepository
                 null;
     }
 
+    /**
+     * Requests an authorized trusted-backend mutation, then refreshes the authoritative settings.
+     * A committed mutation with a failed refresh is reported separately from a rejected mutation.
+     */
     public void setInventorySettings(
             int nearExpiryWarningDays,
             TrustedMutationCallback callback)

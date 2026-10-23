@@ -16,7 +16,7 @@ import java.util.List;
 
 
 /**
- * Implements the User Detail View Model behavior for its Android screen and the application state it presents.
+ * Loads a selected user and the backend role/permission catalogues, then exposes account, role, permission, and TOTP-recovery actions as screen state. Mutation outcomes are passed through from AdminUserRepository, including backend rejection and committed-but-refresh-failed cases, so the UI can distinguish them.
  */
 public class UserDetailViewModel
         extends ViewModel
@@ -275,6 +275,7 @@ public class UserDetailViewModel
         return permissionActionMessage;
     }
 
+    /** Requests the active/inactive state change from the backend and updates screen state from its result. */
     public void setActiveState(
             boolean active)
     {
@@ -481,6 +482,7 @@ public class UserDetailViewModel
                 );
     }
 
+    /** Requests a role change; the trusted service enforces the administrator permission and role constraints. */
     public void setRole(
             String roleId)
     {
@@ -744,6 +746,7 @@ public class UserDetailViewModel
     }
 
 
+    /** Requests one explicit permission change through the trusted user administration endpoint. */
     public void setPermission(
             String permissionId,
             boolean granted)
@@ -979,6 +982,7 @@ public class UserDetailViewModel
     }
 
 
+    /** Loads the selected profile from the backend and exposes missing-user or transport failures as UI state. */
     public void load()
     {
         if (Boolean.TRUE.equals(

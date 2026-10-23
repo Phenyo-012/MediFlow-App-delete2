@@ -11,6 +11,12 @@ import com.medicationinventory.data.local.converter.BatchStatusConverter;
 import com.medicationinventory.model.enums.BatchStatus;
 
 
+/**
+ * Local lot record linked to a medicine. Batch number, receipt and expiry dates, available quantity,
+ * initial quantity, status, and update time support FEFO selection, expiry maintenance, and stock
+ * reports. A unique medicine-plus-batch-number index prevents two local lot rows for the same
+ * medicine while the stable batch ID is used by operations and cloud synchronization.
+ */
 @Entity(tableName = "batches",
 
         foreignKeys = {
@@ -33,9 +39,6 @@ import com.medicationinventory.model.enums.BatchStatus;
 
 @TypeConverters(BatchStatusConverter.class)
 
-/**
- * Persists the local Batch record used by offline inventory workflows.
- */
 public class BatchEntity
 {
     @PrimaryKey

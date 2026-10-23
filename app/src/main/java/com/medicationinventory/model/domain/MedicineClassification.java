@@ -3,7 +3,9 @@ package com.medicationinventory.model.domain;
 
 
 /**
- * Represents Medicine Classification data used by inventory rules and application workflows.
+ * Stores one medicine's ABC and VED labels with the time the shared
+ * classification was updated. It is separate from the medicine master because
+ * classified values have their own trusted write path and access restrictions.
  */
 public class MedicineClassification
 {

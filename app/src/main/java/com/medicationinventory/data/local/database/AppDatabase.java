@@ -59,7 +59,15 @@ import com.medicationinventory.data.local.dao.MedicineClassificationDao;
 )
 
 /**
- * Provides App Database behavior used by the MediFlow application.
+ * Room database for local user profiles, medicine master data, batches, inventory
+ * operations and their allocations, transaction history, sync work, alerts,
+ * audit cache, classifications, settings, and barcode mappings. DAOs expose
+ * table-specific reads and writes, while {@link StockOperationDao} groups related
+ * stock changes into atomic transactions.
+ *
+ * Version upgrades are represented by explicit migrations and registered when
+ * the singleton is created. Keeping those migrations avoids discarding offline
+ * records when an installed database is opened by a newer app version.
  */
 public abstract class AppDatabase extends RoomDatabase
 {
@@ -473,6 +481,15 @@ public abstract class AppDatabase extends RoomDatabase
         }
     };
 
+    /**
+     * Returns the process-wide Room instance, creating it once with the complete
+     * migration chain when first requested. The application context prevents the
+     * singleton from retaining an Activity, and migrations preserve local work
+     * across schema upgrades.
+     *
+     * @param context context used to obtain the application-scoped database
+     * @return shared database instance
+     */
     public static AppDatabase getInstance(Context context)
     {
         if (INSTANCE == null)

@@ -4,13 +4,24 @@ import java.util.Locale;
 
 
 /**
- * Applies Barcode Code Policy rules and calculations used by inventory operations or reports.
+ * Validates text identifiers before they are linked to shared medicine records. Codes remain
+ * strings so leading zeroes and embedded spaces are preserved; control characters and link-like
+ * payloads are rejected instead of being interpreted as web addresses.
  */
 public final class BarcodeCodePolicy {
 
     private BarcodeCodePolicy() { }
 
 
+    /**
+     * Trims surrounding whitespace and returns a printable code within the supported length.
+     * The value is not normalized numerically because leading zeroes can be part of an identifier.
+     *
+     * @param raw manually entered or scanned identifier
+     * @return validated identifier text
+     * @throws IllegalArgumentException if the input is absent, too long, contains unsupported
+     *                                  characters, or resembles a link
+     */
     public static String requireCode(String raw) {
         if (raw == null) throw new IllegalArgumentException("Enter or scan a barcode.");
         String code = raw.trim();

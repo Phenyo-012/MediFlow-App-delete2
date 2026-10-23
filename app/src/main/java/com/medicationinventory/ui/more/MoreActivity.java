@@ -44,7 +44,11 @@ import com.medicationinventory.ui.users.UserManagementActivity;
 
 
 /**
- * Implements the More Activity behavior for its Android screen and the application state it presents.
+ * Provides the secondary navigation hub for account, settings, administration, audit, and sync
+ * screens. Profile permissions control which destination cards are shown; logout routes through
+ * the authentication repository and clears the current session before returning to login. The
+ * visibility checks improve navigation but protected activities and backend services enforce access
+ * independently.
  */
 public class MoreActivity
         extends AppCompatActivity {

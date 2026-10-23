@@ -4,7 +4,10 @@ package com.medicationinventory.model.domain;
 
 
 /**
- * Represents Inventory Settings data used by inventory rules and application workflows.
+ * Shared inventory policy values currently used for the near-expiry warning
+ * window. The setting carries update provenance for synchronization and rejects
+ * blank IDs or negative warning periods so invalid values cannot enter the
+ * domain model.
  */
 public class InventorySettings
 {

@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 
 
 /**
- * Coordinates Daily Inventory Maintenance Scheduler work between the local database and shared cloud state.
+ * Schedules the unique daily maintenance worker at the next business-day boundary so expired batch states and derived alerts are refreshed even when the application is not open.
  */
 public class DailyInventoryMaintenanceScheduler
 {

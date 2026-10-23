@@ -6,12 +6,23 @@ import java.security.NoSuchAlgorithmException;
 
 
 /**
- * Applies Shared Barcode Policy business rules used by inventory operations and reports.
+ * Defines the stable identity and basic integrity check for shared barcode-to-medicine mappings.
+ * Mapping document IDs are derived from the validated barcode text, so the same code converges on
+ * one Firestore document across devices without storing the raw identifier in the document path.
+ * This policy validates a mapping's shape; trusted authorization is enforced by the backend.
  */
 public final class SharedBarcodePolicy {
 
     private SharedBarcodePolicy() { }
 
+    /**
+     * Creates a deterministic SHA-256 document key from a validated barcode.
+     *
+     * @param barcode shared identifier to validate and hash
+     * @return lowercase hexadecimal Firestore document ID
+     * @throws IllegalStateException if SHA-256 is unavailable in the runtime
+     * @throws IllegalArgumentException if the barcode violates {@link BarcodeCodePolicy}
+     */
     public static String documentId(String barcode) {
         String value = BarcodeCodePolicy.requireCode(barcode);
         try {
@@ -25,6 +36,13 @@ public final class SharedBarcodePolicy {
         }
     }
 
+    /**
+     * Checks that the medicine ID is a supported identifier and that the document key matches
+     * the barcode-derived key. This rejects malformed or mis-keyed cloud rows before import; it
+     * does not prove that the caller may edit the mapping.
+     *
+     * @return {@code true} only when the mapping fields are internally consistent
+     */
     public static boolean validCloudMapping(String docId, String barcode, String medicineId) {
         if (medicineId == null || !medicineId.matches("[a-zA-Z0-9_-]{1,128}"))
             return false;

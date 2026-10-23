@@ -16,7 +16,11 @@ import com.medicationinventory.model.enums.Permission;
 
 
 /**
- * Owns observable screen state and user actions for Settings.
+ * Exposes the Room-backed inventory settings and the one settings mutation supported by this
+ * screen: the near-expiry warning period. Saving validates integer input, checks the current
+ * signed-in profile and its update permission, guards against overlapping requests and account
+ * changes, then delegates to the trusted settings repository. UI state distinguishes rejected
+ * writes from a committed value whose follow-up refresh failed.
  */
 public class SettingsViewModel
         extends ViewModel

@@ -19,7 +19,7 @@ import com.medicationinventory.model.domain.UserProfile;
 
 
 /**
- * Coordinates Inventory Settings Sync Coordinator work between the local database and shared cloud state.
+ * Ties the settings Firestore listener to the currently signed-in user profile. It starts live settings observation only for a matching active profile, stops it on sign-out, account switch, or inactive/missing profile, and logs listener failures without treating stale profile data as new authorization.
  */
 public final class InventorySettingsSyncCoordinator
 {

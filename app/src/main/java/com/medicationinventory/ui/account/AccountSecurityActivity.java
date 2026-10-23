@@ -35,7 +35,7 @@ import com.medicationinventory.ui.auth.LoginActivity;
 
 
 /**
- * Implements the Android screen for Account Security and connects user actions to application state.
+ * Manages optional Firebase authenticator enrollment for the currently signed-in account. It requires a fresh online account/profile check and verified email, asks for the current password before generating the Firebase enrollment secret, displays a QR code or setup key, and enrolls only after Firebase accepts a six-digit code. Pending secrets are cleared when the account changes or setup ends; successful enrollment signs out so the next login completes the new MFA challenge.
  */
 public final class AccountSecurityActivity extends AppCompatActivity {
     private AuthenticationRepository authenticationRepository;
@@ -139,6 +139,7 @@ public final class AccountSecurityActivity extends AppCompatActivity {
     }
 
 
+    /** Rechecks Firebase identity, email verification, and the active server profile before enabling enrollment. */
     private void checkFirebaseAccount() {
         if (!isCurrentAccount()) { goToLogin(); return; }
         clearPendingSecret();
@@ -212,6 +213,10 @@ public final class AccountSecurityActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Reauthenticates with the current password, obtains a Firebase MFA session, and generates a TOTP setup secret.
+     * The secret is kept in memory until enrollment completes or account/setup state is cleared.
+     */
     private void beginEnrollment() {
         if (working || !isCurrentAccount()) return;
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -282,6 +287,12 @@ public final class AccountSecurityActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * Converts the Firebase enrollment URI into a QR bitmap; the setup key remains available if QR encoding fails.
+     * @param uri Firebase-generated authenticator enrollment URI
+     * @return black-and-white QR image
+     * @throws WriterException when the URI cannot be encoded
+     */
     private Bitmap createQrBitmap(String uri) throws WriterException {
         final int size = 480;
         BitMatrix matrix = new QRCodeWriter().encode(uri, BarcodeFormat.QR_CODE, size, size);
@@ -303,6 +314,7 @@ public final class AccountSecurityActivity extends AppCompatActivity {
         }
     }
 
+    /** Verifies the entered code with Firebase, clears the secret, and requires a fresh sign-in after enrollment. */
     private void confirmEnrollment() {
         if (working || pendingSecret == null || !isCurrentAccount()) return;
         String code = codeInput.getText() == null ? "" : codeInput.getText().toString().trim();

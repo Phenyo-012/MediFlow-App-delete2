@@ -16,7 +16,7 @@ import java.util.List;
 
 
 /**
- * Declares Room queries and updates for Transaction records used by local repositories.
+ * Stores provisional and confirmed inventory movements and provides joined history/report queries. Provisional rows support offline visibility; reconciliation replaces or confirms them from trusted results.
  */
 @Dao
 public interface TransactionDao

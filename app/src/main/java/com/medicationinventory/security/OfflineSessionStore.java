@@ -19,7 +19,7 @@ import javax.crypto.spec.GCMParameterSpec;
 
 
 /**
- * Enforces Offline Session Store rules that protect account access and locally cached data.
+ * Persists the UID and timestamp of the last server-validated offline enrollment as authenticated ciphertext in private preferences. AES-GCM encryption uses an Android Keystore key; malformed, undecryptable, future-dated, or expired records fail closed.
  */
 public final class OfflineSessionStore {
     public static final long MAX_OFFLINE_AGE_MS = 24L * 60L * 60L * 1000L;
@@ -39,6 +39,13 @@ public final class OfflineSessionStore {
     }
 
 
+    /**
+     * Saves an enrollment only when its server timestamp is recent, positive, and not in the future.
+     * The UID and validation time are encrypted together so the record cannot be replayed for another account.
+     * @param uid account whose profile was validated
+     * @param serverValidatedAt server-provided validation time in epoch milliseconds
+     * @return false when validation is stale or encryption/storage fails; failures clear any prior enrollment
+     */
     public synchronized boolean enroll(String uid, long serverValidatedAt) {
         long now = System.currentTimeMillis();
         if (uid == null || uid.trim().isEmpty() || serverValidatedAt <= 0
@@ -61,6 +68,12 @@ public final class OfflineSessionStore {
         }
     }
 
+    /**
+     * Decrypts the saved enrollment and checks account binding and the maximum offline age.
+     * A clock rollback or any parse, key, or authentication failure is treated as ineligible.
+     * @param uid account requesting offline access
+     * @return true only for a matching, unexpired enrollment
+     */
     public synchronized boolean isEligible(String uid) {
         if (uid == null || uid.isEmpty()) return false;
         try {
@@ -93,6 +106,7 @@ public final class OfflineSessionStore {
         prefs.edit().remove(PREF_ENROLLED).commit();
     }
 
+    /** Loads the app-specific Android Keystore key, creating a randomized AES-GCM key on first use. */
     private static SecretKey getOrCreateKey() throws Exception {
         KeyStore store = KeyStore.getInstance("AndroidKeyStore");
         store.load(null);

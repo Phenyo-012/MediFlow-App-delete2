@@ -23,7 +23,10 @@ import java.util.List;
 
 
 /**
- * Owns observable screen state and user actions for Movement Report.
+ * Coordinates a local movement report across date range, medicine, batch, and transaction-type
+ * filters. It replaces the Room LiveData source as the selected range or filters change, exposes
+ * dependent medicine/batch options, and increases the query limit for incremental loading; it does
+ * not merge server history directly into the report.
  */
 public class MovementReportViewModel
         extends ViewModel

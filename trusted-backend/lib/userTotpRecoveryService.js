@@ -1,5 +1,10 @@
 /**
- * Implements administrator-assisted authenticator recovery with recent sign-in, reason, replay, and audit checks.
+ * Implements administrator-assisted recovery for accounts enrolled in Firebase TOTP. Status reads
+ * require VIEW_USERS; reset requires MANAGE_USER_PERMISSIONS, a different target UID, a recent
+ * administrator sign-in, a UUID request ID, and a documented reason. The service audits the unique
+ * request before removing factors and revoking refresh tokens, then marks completion or
+ * REQUIRES_REVIEW if Firebase recovery cannot be confirmed. Dependency injection keeps the time,
+ * authorization, Auth client, and timestamps controllable in tests.
  */
 
 "use strict";
@@ -21,6 +26,12 @@ class TotpRecoveryError extends Error {
 }
 
 
+/**
+ * Creates the recovery operations with production defaults and optional test seams.
+ *
+ * @param {object} dependencies authorization, Admin Auth, timestamp, and clock providers
+ * @return {{getTotpStatus: Function, resetTotp: Function}} recovery operations
+ */
 function createTotpRecoveryService({
   authorize = (uid, permission) =>
     require("./userAdminAuthorization")
@@ -60,6 +71,14 @@ function createTotpRecoveryService({
   }
 
 
+  /**
+   * Reads whether the selected Firebase account currently has an enrolled TOTP factor. The caller
+   * must have VIEW_USERS and the target Firestore profile must exist before Admin Auth is queried.
+   *
+   * @param {string} actorUid verified administrator UID
+   * @param {string} targetUid account whose enrollment status is requested
+   * @return {Promise<{uid: string, totpEnrolled: boolean}>} current factor status
+   */
   async function getTotpStatus(actorUid, targetUid) {
     const uid = validUid(targetUid);
     const context = await authorize(actorUid, VIEW_PERMISSION);
@@ -73,13 +92,16 @@ function createTotpRecoveryService({
 
 
   /**
-   * Resets another user's authenticator only after permission, recent sign-in, request-ID,
-   * and reason checks. The audit is written before Firebase factor removal and token revocation.
+   * Resets another user's authenticator only after permission, recent sign-in, request-ID, and
+   * reason checks. The audit is written before Firebase factor removal and token revocation; a
+   * partial Firebase failure is marked for review instead of being reported as a completed reset.
    *
-   * @param actorUid administrator performing recovery
-   * @param targetUid account whose authenticator is being reset
-   * @param body validated recovery request containing requestId and reason
-   * @param authTimeSeconds Firebase authentication time from the verified token
+   * @param {string} actorUid verified administrator UID
+   * @param {string} targetUid account whose authenticator is being reset
+   * @param {object} body request ID and reason from the recovery request
+   * @param {number} authTimeSeconds Firebase authentication time from the verified token
+   * @return {Promise<{uid: string, reset: boolean, requestId: string}>} reset confirmation
+   * @throws {TotpRecoveryError} for authorization, validation, duplicate, or recovery failures
    */
   async function resetTotp(actorUid, targetUid, body, authTimeSeconds) {
     const uid = validUid(targetUid);

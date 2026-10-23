@@ -27,7 +27,10 @@ import java.util.List;
 
 
 /**
- * Implements the Analytics Report View Model behavior for its Android screen and the application state it presents.
+ * Combines the local analytics report with the optional ABC/VED classification summary shown on the
+ * report screen. Movement-window selection refreshes the report source, while classification reads
+ * and refresh status are gated by the current profile's restricted-data permission. Account changes
+ * clear that restricted result so a prior user's classifications are not retained in visible state.
  */
 public class AnalyticsReportViewModel
         extends ViewModel

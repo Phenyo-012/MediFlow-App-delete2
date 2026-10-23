@@ -19,7 +19,10 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Owns observable screen state and user actions for Stock Level Report.
+ * Combines the signed-in profile with local stock-level report rows and applies the report's
+ * all/reorder-only filter. The repository and shared recommendation service own stock and reorder
+ * calculations; this ViewModel only keeps the displayed subset synchronized with the latest rows
+ * and exposes repository errors to the activity.
  */
 public class StockLevelReportViewModel
         extends ViewModel

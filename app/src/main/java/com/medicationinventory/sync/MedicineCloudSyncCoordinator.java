@@ -29,7 +29,7 @@ import java.util.List;
 
 
 /**
- * Coordinates Medicine Cloud Sync Coordinator work between the local database and shared cloud state.
+ * Listens to server-confirmed Firestore medicine snapshots for the current Firebase user and merges them into Room. It rejects malformed documents, protects local edits using a per-user/per-medicine fingerprint checkpoint, defers updates while stock operations are pending, and avoids medicine-code collisions. Snapshot import is transactional and cancelled if the account changes; shared category options are cleared on sign-out or account switch.
  */
 public final class MedicineCloudSyncCoordinator {
     private static final String TAG = "MedicineCloudSync";

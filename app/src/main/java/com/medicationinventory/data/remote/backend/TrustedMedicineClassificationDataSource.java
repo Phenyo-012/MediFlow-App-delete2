@@ -26,7 +26,10 @@ import java.util.Locale;
 
 
 /**
- * Calls the trusted backend for Trusted Medicine Classification Data Source operations and translates HTTP outcomes for app callers.
+ * Writes ABC and VED classifications to the shared medicine-classification
+ * resource through the trusted backend. The client authenticates the request
+ * with the current Firebase ID token and maps the server response for callers;
+ * role and permission decisions are made by the backend.
  */
 public class TrustedMedicineClassificationDataSource
 {
@@ -85,6 +88,17 @@ public class TrustedMedicineClassificationDataSource
     }
 
 
+    /**
+     * Requests a shared ABC/VED classification update for one medicine. The
+     * source validates required values before sending the authenticated request;
+     * the trusted backend remains responsible for permission checks and the
+     * authoritative stored classification.
+     *
+     * @param medicineId shared medicine identifier
+     * @param abcClassification ABC category supplied by the caller
+     * @param vedClassification VED category supplied by the caller
+     * @param callback receives the server mutation result or failure
+     */
     public void setClassification(
             String medicineId,
             String abcClassification,

@@ -2,7 +2,10 @@ package com.medicationinventory.model.domain;
 
 
 /**
- * Represents Inventory Filter State data used by inventory rules and application workflows.
+ * Immutable selection state for the inventory list. It combines text and
+ * category search with stock, expiry, and sort choices, and optionally ABC/VED
+ * criteria that the ViewModel can clear when restricted classification access
+ * is revoked. Constructor defaults keep missing selections usable by the UI.
  */
 public final class InventoryFilterState {
     public enum StockStatus {

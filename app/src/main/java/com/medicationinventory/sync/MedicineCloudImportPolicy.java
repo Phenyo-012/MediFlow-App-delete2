@@ -12,7 +12,7 @@ import java.util.Objects;
 
 
 /**
- * Coordinates Medicine Cloud Import Policy work between the local database and shared cloud state.
+ * Decides whether a Firestore medicine snapshot can initialize or replace a local master. Version and fingerprint checkpoints protect unsynchronized or legacy local changes, distinguish identical snapshots from changes, and prevent older or conflicting cloud state from silently overwriting local data.
  */
 public final class MedicineCloudImportPolicy {
     public enum Decision {

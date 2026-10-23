@@ -21,7 +21,7 @@ import java.util.List;
 
 
 /**
- * Declares Room queries and updates for Alert records used by local repositories.
+ * Provides alert persistence and queries for active alerts, notification candidates, acknowledgement, and report projections. Alert evaluation decides desired conditions; repository reconciliation uses this DAO to update existing rows without creating duplicate open alerts.
  */
 @Dao
 @TypeConverters(AlertConverter.class)

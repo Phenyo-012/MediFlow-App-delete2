@@ -1,8 +1,8 @@
 /**
- * Vercel HTTP entry point for inventory reconciliation.
- *
- * Keep HTTP validation separate from the service that reconciles authoritative
- * state.
+ * Vercel POST endpoint that returns the authoritative terminal result and affected stock snapshots
+ * for one locally pending operation. Firebase verifies the bearer token with revocation checking
+ * before the endpoint accepts a UUID; the reconciliation service then enforces active-account and
+ * operation-owner checks. This route reads current cloud state and does not replay the operation.
  */
 const {
   getAdminAuth,
@@ -20,6 +20,14 @@ const UUID_PATTERN =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 
+/**
+ * Checks method, credentials, and operation ID before requesting an owner-scoped reconciliation
+ * snapshot. Known reconciliation failures map to their HTTP status and stable code; unexpected
+ * failures are logged without request credentials and returned as a generic server error.
+ *
+ * @param {import('http').IncomingMessage} request Vercel request
+ * @param {import('http').ServerResponse} response Vercel response
+ */
 module.exports = async function handler(
   request,
   response,
@@ -174,10 +182,7 @@ module.exports = async function handler(
 };
 
 
-/**
- * Applies read bearer token on the server. Signing in does not automatically grant
- * this permission.
- */
+/** Extracts a non-empty bearer credential; Firebase Admin performs signature and revocation checks. */
 function readBearerToken(
   authorizationHeader,
 ) {
@@ -211,8 +216,12 @@ function readBearerToken(
 
 
 /**
- * Checks body before the value reaches trusted storage. Invalid or ambiguous input
- * should fail here.
+ * Normalizes Vercel's parsed object or a JSON string into a request object. Malformed JSON and
+ * unsupported body forms become an empty object so required-field validation returns the endpoint's
+ * stable invalid-operation response.
+ *
+ * @param {*} body request body supplied by Vercel
+ * @return {object} parsed body or an empty object
  */
 function parseBody(
   body,

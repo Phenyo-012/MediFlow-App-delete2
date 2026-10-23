@@ -10,7 +10,7 @@ import java.util.List;
 
 
 /**
- * Reads inventory movement history from the repository data sources for display and filtering.
+ * Queries the local movement history records and related filter options for the movement history screen. It exposes observable data for the UI; cloud import and reconciliation populate the local history separately.
  */
 public class MovementHistoryRepository
 {

@@ -5,7 +5,10 @@ import com.medicationinventory.model.enums.BatchStatus;
 
 
 /**
- * Represents Batch data used by inventory rules and application workflows.
+ * Domain view of a medicine lot, including its receipt and expiry dates,
+ * remaining and originally received quantities, status, and last update time.
+ * Inventory calculations use the batch-level values so expired or otherwise
+ * unavailable stock can be excluded independently of the medicine master.
  */
 public class Batch
 {

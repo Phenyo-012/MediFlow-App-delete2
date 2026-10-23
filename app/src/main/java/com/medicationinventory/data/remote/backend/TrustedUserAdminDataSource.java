@@ -33,7 +33,11 @@ import java.util.List;
 
 
 /**
- * Calls the trusted backend for Trusted User Admin Data Source operations and translates HTTP outcomes for app callers.
+ * Provides the Android client with the trusted backend's user-administration
+ * operations: listing users and access metadata, creating accounts, and changing
+ * account state, role, or permissions. Firebase tokens authenticate requests;
+ * backend authorization is the security boundary, and parsed results are
+ * returned through callbacks on the main thread.
  */
 public class TrustedUserAdminDataSource
 {

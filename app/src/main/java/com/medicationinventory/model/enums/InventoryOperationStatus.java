@@ -3,7 +3,8 @@ package com.medicationinventory.model.enums;
 
 
 /**
- * Defines supported Inventory Operation Status values shared by inventory and authorization workflows.
+ * Progress state for a stock operation, from local queueing and server submission to confirmation,
+ * conflict, or rejection. A submitted or locally pending status does not mean the shared stock change is confirmed.
  */
 public enum InventoryOperationStatus
 {

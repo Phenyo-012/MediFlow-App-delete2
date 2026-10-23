@@ -27,7 +27,7 @@ import java.util.Set;
 
 
 /**
- * Coordinates Batch Cloud Sync Coordinator work between the local database and shared cloud state.
+ * Imports server-confirmed batch snapshots into Room for the active Firebase UID. It waits for the matching medicine master, defers all medicine batches while a local stock operation is unresolved, rejects ID or medicine/batch-number collisions, and only replaces a local batch when the cloud timestamp is newer. The transaction is cancelled on account switch and retried after relevant local table changes.
  */
 public final class BatchCloudSyncCoordinator {
     private static final String TAG = "BatchCloudSync";

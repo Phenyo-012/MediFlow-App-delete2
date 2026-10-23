@@ -137,8 +137,13 @@ function requireBearerToken(
 
 
 /**
- * Contains the handle error step, keeping that decision separate from the HTTP
- * handler or test setup.
+ * Converts authentication and user-admin failures into stable list-endpoint
+ * responses. Unexpected errors are logged and returned with a generic server
+ * message instead of their internal details.
+ *
+ * @param {Error} error failure raised while loading users
+ * @param {Object} response Vercel response object
+ * @return {*} JSON error response
  */
 function handleError(
     error,

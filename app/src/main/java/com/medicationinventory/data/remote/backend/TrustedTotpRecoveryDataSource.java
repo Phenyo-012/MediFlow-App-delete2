@@ -19,7 +19,11 @@ import java.nio.charset.StandardCharsets;
 
 
 /**
- * Calls the trusted backend for Trusted Totp Recovery Data Source operations and translates HTTP outcomes for app callers.
+ * Calls the administrator-only TOTP recovery endpoints over HTTPS and maps their status/error body
+ * into {@link RecoveryException}. Firebase ID tokens are obtained from the current account, and
+ * callbacks are posted on the main thread while HTTP I/O runs on named background threads. This
+ * client validates request shape and response identity; role/permission, recent-sign-in, replay,
+ * audit, factor removal, and token revocation remain enforced by the trusted backend.
  */
 public final class TrustedTotpRecoveryDataSource {
     private static final int CONNECT_TIMEOUT_MS = 15000;
@@ -66,6 +70,13 @@ public final class TrustedTotpRecoveryDataSource {
         this.backendUrl = normalized;
     }
 
+    /**
+     * Fetches enrollment status for a selected user and rejects responses that identify another UID
+     * or omit the enrollment field.
+     *
+     * @param targetUid administrator-selected account UID
+     * @param callback main-thread result callback
+     */
     public void getStatus(String targetUid, StatusCallback callback) {
         if (callback == null) throw new IllegalArgumentException("Callback is required.");
         if (!isUidValid(targetUid)) {
@@ -89,6 +100,16 @@ public final class TrustedTotpRecoveryDataSource {
         }, "totp-recovery-status").start(), callback::onError);
     }
 
+    /**
+     * Requests an audited authenticator reset using a unique retry identifier. The local length
+     * checks provide immediate feedback, while the backend independently enforces fresh
+     * authentication, authorization, request uniqueness, and recovery eligibility.
+     *
+     * @param targetUid account whose TOTP enrollment is to be removed
+     * @param reason administrator's required recovery explanation
+     * @param requestId UUID used by the backend as an idempotency/audit key
+     * @param callback main-thread result callback
+     */
     public void reset(String targetUid, String reason, String requestId, ResetCallback callback) {
         if (callback == null) throw new IllegalArgumentException("Callback is required.");
         if (!isUidValid(targetUid) || reason == null || reason.trim().length() < 12

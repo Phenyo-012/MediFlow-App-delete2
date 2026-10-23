@@ -16,7 +16,7 @@ import java.util.List;
 
 
 /**
- * Owns observable screen state and user actions for User Management.
+ * Requests the user list from AdminUserRepository and exposes loading, result, and error state for the management screen. Refreshing does not grant privileges; backend authorization and profile state determine whether the request succeeds.
  */
 public class UserManagementViewModel
         extends ViewModel

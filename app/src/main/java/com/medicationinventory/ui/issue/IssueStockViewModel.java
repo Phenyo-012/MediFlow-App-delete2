@@ -10,7 +10,10 @@ import com.medicationinventory.service.FefoAllocationService;
 
 
 /**
- * Owns observable screen state and user actions for Issue Stock.
+ * Drives the issue form's FEFO preview and submission state. It asks the local issue repository
+ * for current eligible batches, publishes either a complete allocation or an error state, and
+ * leaves final validation and authoritative stock checks to {@link com.medicationinventory.service.IssueService}.
+ * The activity uses the result to review allocations before it creates a pending operation.
  */
 public class IssueStockViewModel
         extends ViewModel {
@@ -42,6 +45,14 @@ public class IssueStockViewModel
 
 
 
+    /**
+     * Requests a fresh local FEFO allocation for the requested medicine and quantity. The UI is
+     * moved to loading first; success publishes either the full allocation or an insufficient-stock
+     * state, while repository errors are surfaced without creating an inventory operation.
+     *
+     * @param medicineId selected shared medicine identifier
+     * @param requestedQuantity positive issue quantity entered by the user
+     */
     public void calculateFefo(
             String medicineId,
             int requestedQuantity

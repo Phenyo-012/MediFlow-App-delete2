@@ -15,7 +15,7 @@ import java.util.List;
 
 
 /**
- * Queries local transaction and related records to supply movement report data.
+ * Builds movement report rows and medicine or batch filter choices from local transaction history. Report queries use the selected date range and filters, while synchronization is responsible for importing confirmed cloud history into the local store.
  */
 public class MovementReportRepository
 {

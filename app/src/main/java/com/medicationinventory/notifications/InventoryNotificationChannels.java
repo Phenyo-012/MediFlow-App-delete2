@@ -7,7 +7,9 @@ import android.os.Build;
 
 
 /**
- * Handles Inventory Notification Channels behavior for inventory-related Android notifications.
+ * Creates the stable Android 8+ channel used for inventory alerts. Channel identity persists across
+ * app runs, so the ID must remain consistent with permission checks and the publisher; creation is
+ * a no-op on older versions or when NotificationManager is unavailable.
  */
 public final class InventoryNotificationChannels {
 

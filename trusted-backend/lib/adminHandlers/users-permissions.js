@@ -156,8 +156,12 @@ function requireBearerToken(
 
 
 /**
- * Contains the require target user ID step, keeping that decision separate from
- * the HTTP handler or test setup.
+ * Extracts and trims the UID selected by the rewritten route. Rejecting blank or
+ * non-string values here keeps permission mutations bound to an explicit target.
+ *
+ * @param {Object} request incoming user-permission request
+ * @return {string} target user's UID
+ * @throws {UserAdminHttpError} when the target UID is missing or invalid
  */
 function requireTargetUid(
     request,
@@ -184,8 +188,13 @@ function requireTargetUid(
 
 
 /**
- * Contains the require body step, keeping that decision separate from the HTTP
- * handler or test setup.
+ * Returns an already-parsed object or parses a JSON-string payload for the
+ * permission mutation. Invalid JSON and absent values become a client error
+ * before the target permission is changed.
+ *
+ * @param {Object} request incoming permission request
+ * @return {Object} parsed payload
+ * @throws {UserAdminHttpError} when the request body is absent or malformed
  */
 function requireBody(
     request,
@@ -249,8 +258,12 @@ function requirePermissionId(
 
 
 /**
- * Contains the require granted step, keeping that decision separate from the HTTP
- * handler or test setup.
+ * Requires granted to be an actual boolean so a permission update cannot
+ * interpret strings or omitted values as an authorization decision.
+ *
+ * @param {Object} body parsed request payload
+ * @return {boolean} whether the permission should be granted
+ * @throws {UserAdminHttpError} when granted is not a boolean
  */
 function requireGranted(
     body,
@@ -272,8 +285,12 @@ function requireGranted(
 
 
 /**
- * Contains the handle error step, keeping that decision separate from the HTTP
- * handler or test setup.
+ * Maps known authentication and user-admin errors to their API status and code;
+ * unexpected failures are logged and exposed only as a generic server error.
+ *
+ * @param {Error} error failure raised while updating a permission
+ * @param {Object} response Vercel response object
+ * @return {*} JSON error response
  */
 function handleError(
     error,

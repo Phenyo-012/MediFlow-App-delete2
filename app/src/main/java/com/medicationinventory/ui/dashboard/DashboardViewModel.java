@@ -25,7 +25,11 @@ import java.util.List;
 
 
 /**
- * Owns observable screen state and user actions for Dashboard.
+ * Combines the current profile with inventory summaries for the dashboard: medicine totals,
+ * low-stock and expiry alerts, pending sync work, and recent movements. The values are exposed as
+ * LiveData so the activity can render Room-backed changes without owning repository logic; report
+ * services provide the derived calculations while account/profile changes update the greeting and
+ * available actions.
  */
 public class DashboardViewModel
         extends ViewModel

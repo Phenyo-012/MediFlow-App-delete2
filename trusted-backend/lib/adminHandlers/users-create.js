@@ -109,8 +109,15 @@ function parseBody(
 
 module.exports =
   /**
-   * Contains the handler step, keeping that decision separate from the HTTP handler
-   * or test setup.
+   * Accepts only POST requests, verifies the Firebase ID token and administrator
+   * permission, then validates and creates the requested Firebase account and
+   * application profile through the user-admin service. The service result is
+   * mapped to the endpoint response; failures are converted by the handler's
+   * error path.
+   *
+   * @param {Object} request Vercel request with the new-user payload
+   * @param {Object} response Vercel response object
+   * @return {Promise<*>} response produced after the create attempt
    */
   async function handler(
       request,

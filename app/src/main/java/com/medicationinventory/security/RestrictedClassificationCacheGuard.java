@@ -21,7 +21,7 @@ import com.medicationinventory.model.enums.Permission;
 
 
 /**
- * Enforces Restricted Classification Cache Guard rules that protect account access and locally cached data.
+ * Guards the locally cached ABC/VED classifications across Firebase account and profile changes. It revokes the access gate immediately, removes restricted cache data when ownership or permission is uncertain, and grants access only after both the local profile and a server-confirmed profile belong to the current active user with VIEW_ABC_VED. A failed purge remains marked pending so a later startup can retry it.
  */
 public final class RestrictedClassificationCacheGuard {
     private static final String TAG = "RestrictedCacheGuard";
@@ -70,6 +70,7 @@ public final class RestrictedClassificationCacheGuard {
     }
 
 
+    /** Installs the Firebase auth listener once; the listener performs profile and cache checks on the main thread. */
     public void start() {
         if (started) return;
         started = true;
@@ -88,6 +89,10 @@ public final class RestrictedClassificationCacheGuard {
     }
 
 
+    /**
+     * Resets prior account state, schedules a purge when cache ownership is uncertain, and starts fresh profile observation.
+     * Listener generations make delayed callbacks from a previous UID harmless.
+     */
     private void handleAuthChanged(FirebaseAuth auth) {
         String uid = currentUid();
         if (uid != null) uid = uid.trim();
@@ -174,6 +179,10 @@ public final class RestrictedClassificationCacheGuard {
     }
 
 
+    /**
+     * Opens the gate only after local and server-confirmed permission checks agree for the current UID.
+     * The cache-owner write must succeed and any pending purge must finish before restricted reads are allowed.
+     */
     private void grantIfReady() {
         String uid = observedUid;
         if (uid == null || !uid.equals(currentUid()) || purgeInProgress
@@ -194,6 +203,10 @@ public final class RestrictedClassificationCacheGuard {
     }
 
 
+    /**
+     * Revokes access before clearing restricted data and persists a pending marker before asynchronous work starts.
+     * The marker survives purge failure so access cannot be granted against uncleared data.
+     */
     private void requestRestrictedPurge() {
         accessGate.revoke();
         if (purgeInProgress) return;

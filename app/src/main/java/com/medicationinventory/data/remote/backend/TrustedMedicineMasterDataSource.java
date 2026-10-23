@@ -21,7 +21,10 @@ import java.nio.charset.StandardCharsets;
 
 
 /**
- * Calls the trusted backend for Trusted Medicine Master Data Source operations and translates HTTP outcomes for app callers.
+ * Creates, edits, and deactivates shared medicine master records through the
+ * trusted admin API. It serializes the domain medicine into the endpoint's JSON
+ * payload and reports the server response asynchronously; the backend enforces
+ * administrator permissions and master-data validation.
  */
 public final class TrustedMedicineMasterDataSource {
     private static final int CONNECT_TIMEOUT_MS = 15000;

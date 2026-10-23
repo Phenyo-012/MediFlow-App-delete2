@@ -32,7 +32,7 @@ import java.util.Set;
 
 
 /**
- * Declares Room queries and updates for Stock Operation records used by local repositories.
+ * Defines Room transactions that commit local receipts, issues, adjustments, and corrections together with their operation, allocations, movements, and sync queue row. Issue and correction paths recheck current batch and history state inside the transaction so stale UI selections cannot silently alter stock.
  */
 @Dao
 @TypeConverters({InventoryOperationConverter.class, BatchStatusConverter.class})
@@ -97,6 +97,17 @@ public interface StockOperationDao
 
 
 
+    /**
+     * Atomically records a new lot receipt as an operation, newly created batch, allocation,
+     * provisional movement, and sync queue row. Keeping all writes in one Room transaction prevents
+     * a partially stored receipt from being uploaded or counted locally.
+     *
+     * @param operation pending receipt envelope
+     * @param batch new local lot created for this receipt
+     * @param allocation quantity assigned to the new lot
+     * @param transaction provisional receipt movement
+     * @param queueItem retry metadata that schedules trusted processing
+     */
     @Transaction
 
     default void commitNewBatchReceipt(
@@ -124,6 +135,16 @@ public interface StockOperationDao
     }
 
 
+    /**
+     * Persists an explicit top-up against an existing eligible lot without creating a second batch
+     * row. It checks receipt mode, operation/allocation/queue identity, medicine ownership, active
+     * or depleted status, and non-expiry before writing; authoritative quantity changes are applied
+     * by trusted processing.
+     *
+     * @param operation pending receipt marked as an existing-batch top-up
+     * @param allocation selected existing batch and received quantity
+     * @param queueItem retry metadata for trusted processing
+     */
     @Transaction
 
     default void commitExistingBatchReceipt(
@@ -162,6 +183,17 @@ public interface StockOperationDao
     }
 
 
+    /**
+     * Rechecks the issue's operation, allocation order, quantities, ownership, and current batch
+     * availability before applying the local provisional stock reduction. Operation, allocations,
+     * movement rows, batch quantities, and queue state commit together or roll back as one unit.
+     *
+     * @param operation pending issue request
+     * @param allocations ordered batch allocation proposal
+     * @param transactions provisional negative movement rows
+     * @param queueItem retry metadata for trusted processing
+     * @param fefoOverrideAuthorized whether the caller supplied the separately authorized override
+     */
     @Transaction
 
     default void commitIssue(
@@ -329,6 +361,16 @@ public interface StockOperationDao
         insertQueueItem(queueItem);
     }
 
+    /**
+     * Applies the validated adjustment to its target batch and writes the operation, allocation,
+     * provisional movement, and queue row atomically. The stored direction determines whether the
+     * quantity is added or removed; any validation failure rolls back the entire local commit.
+     *
+     * @param operation pending adjustment envelope
+     * @param allocation target batch and absolute adjustment quantity
+     * @param transaction provisional signed movement row
+     * @param queueItem retry metadata for trusted processing
+     */
     @Transaction
 
     default void commitAdjustment(
@@ -595,6 +637,16 @@ public interface StockOperationDao
     }
 
 
+    /**
+     * Records a compensating correction only when its referenced original operation is confirmed
+     * and affected the selected batch. The inverse movement is written with the correction and sync
+     * row in the same Room transaction, preserving the original history instead of rewriting it.
+     *
+     * @param operation pending correction envelope with the related operation ID
+     * @param allocation single batch allocation being corrected
+     * @param transaction provisional compensating movement
+     * @param queueItem retry metadata for trusted processing
+     */
     @Transaction
 
     default void commitCorrection(InventoryOperationEntity operation, OperationAllocationEntity allocation,

@@ -11,7 +11,10 @@ import java.util.Set;
 
 
 /**
- * Handles Inventory Alert Notification History behavior for inventory-related Android notifications.
+ * Tracks delivered alert IDs in app-private preferences and coordinates notification replacement
+ * and cancellation. The stored owner scopes history to one Firebase UID; switching accounts
+ * cancels the previous owner's notifications and synchronously clears its delivery set before the
+ * new owner can use the store, preventing stale alerts from leaking across account sessions.
  */
 public final class InventoryAlertNotificationHistory {
 

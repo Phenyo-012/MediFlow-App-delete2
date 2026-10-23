@@ -12,7 +12,12 @@ import java.util.Map;
 
 
 /**
- * Reads or writes Firestore Inventory Operation Data Source data in Firestore and translates asynchronous results for app callers.
+ * Persists the client operation envelope in Firestore's {@code inventoryOperations}
+ * collection for trusted server processing. The adapter treats a successful set
+ * as submission only; authoritative status and stock effects arrive later through
+ * processing/reconciliation. If a create fails, it reads the existing document
+ * from the server so an idempotent retry can return its known status instead of
+ * blindly creating a second operation.
  */
 public class FirestoreInventoryOperationDataSource
 {
@@ -63,6 +68,11 @@ public class FirestoreInventoryOperationDataSource
                 operationId, createError, callback));
     }
 
+    /**
+     * Resolves a failed create attempt against the server before surfacing the
+     * original write error. This supports retrying the same operation ID when the
+     * first write may have reached Firestore despite a client-side failure.
+     */
     private void readExistingOperation(DocumentReference document, String operationId,
                                        Exception originalCreateError, UploadCallback callback)
     {
@@ -100,6 +110,16 @@ public class FirestoreInventoryOperationDataSource
                 );
     }
 
+    /**
+     * Converts an existing operation document into the small status result used
+     * by the sync worker, rejecting mismatched IDs and missing or unknown status
+     * values rather than treating malformed remote state as a valid response.
+     *
+     * @param snapshot server document returned for the operation ID
+     * @param expectedOperationId ID assigned locally to the submitted operation
+     * @return mapped status and optional backend result fields
+     * @throws IllegalStateException when document identity or status is invalid
+     */
     private InventoryOperationRemoteResult
     mapExistingResult(DocumentSnapshot snapshot, String expectedOperationId)
     {

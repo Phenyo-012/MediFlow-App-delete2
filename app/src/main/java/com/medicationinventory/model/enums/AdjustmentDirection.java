@@ -3,7 +3,7 @@ package com.medicationinventory.model.enums;
 
 
 /**
- * Defines supported Adjustment Direction values shared by inventory and authorization workflows.
+ * Direction of a stock adjustment: {@code IN} adds units to a batch and {@code OUT} removes them.
  */
 public enum AdjustmentDirection
 {

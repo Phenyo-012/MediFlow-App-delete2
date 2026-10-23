@@ -128,8 +128,13 @@ function requireBearerToken(
 
 
 /**
- * Contains the handle error step, keeping that decision separate from the HTTP
- * handler or test setup.
+ * Maps authentication and application failures to their expected HTTP responses;
+ * other errors are logged and reduced to a generic server error rather than
+ * leaking implementation details to the caller.
+ *
+ * @param {Error} error failure raised while handling the roles request
+ * @param {Object} response Vercel response object
+ * @return {*} JSON error response
  */
 function handleError(
     error,

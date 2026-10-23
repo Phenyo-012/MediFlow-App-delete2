@@ -14,7 +14,7 @@ import java.util.List;
 
 
 /**
- * Applies Reorder Recommendation Service business rules used by inventory operations and reports.
+ * Calculates usable and near-expiry stock from batch records and derives reorder thresholds and quantities from each medicine reorder and target levels. Usable stock excludes non-positive, expired, or non-active batches; near-expiry stock remains part of the usable total.
  */
 public class ReorderRecommendationService
 {
@@ -25,6 +25,12 @@ public class ReorderRecommendationService
 
 
 
+    /**
+     * Totals active, positive, non-expired batch quantities using the South African business date.
+     * @param batches candidate batches; null is treated as empty
+     * @return usable units
+     * @throws IllegalStateException when the total exceeds the supported integer range
+     */
     public int calculateUsableStock(
             List<Batch> batches)
     {
@@ -76,6 +82,7 @@ public class ReorderRecommendationService
     }
 
 
+    /** Returns true when usable stock is at or below the medicine reorder level. */
     public boolean isReorderRequired(
             Medicine medicine,
             int usableStock)
@@ -98,6 +105,11 @@ public class ReorderRecommendationService
     }
 
 
+    /**
+     * Returns the gap to target stock when usable stock is at or below the reorder level.
+     * @throws IllegalArgumentException for invalid medicine thresholds or negative stock
+     * @throws IllegalStateException when the calculated quantity exceeds the supported range
+     */
     public int calculateRecommendedQuantity(
             Medicine medicine,
             int usableStock)

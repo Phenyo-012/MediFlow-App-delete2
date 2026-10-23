@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 
 
 /**
- * Coordinates Inventory Sync Scheduler work between the local database and shared cloud state.
+ * Schedules the unique WorkManager job that uploads pending inventory operations and processes submitted work. Sign-in and app startup can request the same unique work, allowing WorkManager to apply the configured conflict policy instead of creating parallel sync workers.
  */
 public class InventorySyncScheduler {
 

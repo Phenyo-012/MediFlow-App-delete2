@@ -3,7 +3,7 @@ package com.medicationinventory.model.enums;
 
 
 /**
- * Defines supported Alert Severity values shared by inventory and authorization workflows.
+ * Severity assigned by alert evaluation to distinguish medium-priority conditions from high-priority ones.
  */
 public enum AlertSeverity
 {
